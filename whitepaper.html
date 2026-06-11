@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recurve Whitepaper — Genesis Edition</title>
+    
+    <!-- Google Fonts - Rajdhani for headings, Georgia for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #1A1A1A;
+            --dim-text: #666666;
+            --accent-color: #FF0000;
+            --border-color: #E0E0E0;
+            --code-bg: #F8F9FA;
+            --sidebar-width: 250px;
+        }
+
+        body.light-mode {
+            --bg-color: #FFFFFF;
+            --text-color: #1A1A1A;
+            --dim-text: #666666;
+            --accent-color: #FF0000;
+            --border-color: #E0E0E0;
+            --code-bg: #F8F9FA;
+        }
+
+        body.dark-mode {
+            --bg-color: #0A0A0A;
+            --text-color: #F5F5F5;
+            --dim-text: #888888;
+            --accent-color: #FF0000;
+            --border-color: #333333;
+            --code-bg: #1A1A1A;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Georgia, serif;
+            line-height: 1.8;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            position: relative;
+        }
+
+        /* Top-right Toggle Button */
+        .theme-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-color);
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+
+        .theme-btn:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        .paper-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-bottom: 2px double var(--border-color);
+            padding-bottom: 80px;
+            margin-bottom: 80px;
+        }
+
+        .cover-logo {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 6rem;
+            font-weight: 700;
+            letter-spacing: 15px;
+            color: var(--accent-color);
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
+        .cover-subtitle {
+            font-size: 1.6rem;
+            font-weight: 500;
+            margin-bottom: 40px;
+            max-width: 600px;
+            color: var(--text-color);
+        }
+
+        .cover-meta {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--dim-text);
+            margin: 10px 0;
+        }
+
+        .cover-tagline {
+            font-style: italic;
+            font-size: 1.2rem;
+            margin-top: 40px;
+            color: var(--accent-color);
+        }
+
+        .ascii-bow {
+            font-family: monospace;
+            color: var(--accent-color);
+            line-height: 1.2;
+            white-space: pre;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-color);
+            margin-top: 60px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            margin-top: 40px;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 30px;
+        }
+
+        p {
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-bottom: 25px;
+            padding-left: 30px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        blockquote {
+            border-left: 4px solid var(--accent-color);
+            padding-left: 20px;
+            margin: 30px 0;
+            font-style: italic;
+            color: var(--dim-text);
+        }
+
+        /* Table of Contents */
+        .toc-section {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            margin: 60px 0;
+        }
+
+        .toc-title {
+            margin-top: 0;
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc-item {
+            margin-bottom: 12px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.05rem;
+        }
+
+        .toc-sublist {
+            list-style: none;
+            padding-left: 20px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .toc-subitem {
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .toc-item a, .toc-subitem a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .toc-item a:hover, .toc-subitem a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Table Design */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 500;
+            font-size: 1.05rem;
+        }
+
+        th {
+            background: var(--code-bg);
+            color: var(--text-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--code-bg);
+        }
+
+        /* Roadmap Timeline */
+        .roadmap-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin: 50px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .roadmap-node {
+            position: relative;
+        }
+
+        .roadmap-node::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            border: 2px solid var(--bg-color);
+            z-index: 2;
+        }
+
+        .roadmap-node.completed::before {
+            background: #00FF88;
+        }
+
+        .roadmap-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .roadmap-desc {
+            font-size: 1rem;
+            color: var(--dim-text);
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-badge.done {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00FF88;
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 69, 0, 0.1);
+            color: #FF4500;
+        }
+
+        .disclaimer-section {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            font-size: 0.95rem;
+            text-align: justify;
+            margin: 50px 0;
+        }
+
+        /* Print styling */
+        @media print {
+            .theme-btn {
+                display: none;
+            }
+            body {
+                background: #FFFFFF !important;
+                color: #000000 !important;
+                font-size: 12pt;
+                line-height: 1.5;
+            }
+            .paper-container {
+                max-width: 100%;
+                padding: 0;
+            }
+            h1, h2, h3 {
+                color: #000000 !important;
+                page-break-after: avoid;
+            }
+            table, tr, td, th {
+                border: 1px solid #000000 !important;
+                color: #000000 !important;
+            }
+            .toc-section, .disclaimer-section {
+                background: #FFFFFF !important;
+                border: 1px solid #000000 !important;
+            }
+            .roadmap-timeline::before {
+                background: #000000 !important;
+            }
+            .roadmap-node::before {
+                border: 2px solid #FFFFFF !important;
+                background: #000000 !important;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+    <button class="theme-btn" id="theme-toggle">🌙</button>
+
+    <div class="paper-container">
+        <div style="display: flex; gap: 20px; font-family: 'Rajdhani', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+            <a href="index.html" style="color: var(--accent-color); text-decoration: none;">Home</a>
+            <span style="color: var(--dim-text);">|</span>
+            <a href="rage-meter.html" style="color: var(--text-color); text-decoration: none;">Rage Meter</a>
+        </div>
+        
+        <!-- COVER PAGE -->
+        <div class="cover-page">
+            <div class="ascii-bow">
+       .
+      /
+     (
+      \
+       \
+   &lt;====()====&gt;
+       /
+      /
+     (
+      \
+       '
+            </div>
+            <div class="cover-logo">RECURVE</div>
+            <div class="cover-subtitle">A Decentralized Blockchain for Retail Revolution</div>
+            
+            <div class="cover-meta" style="margin-top: 60px;">Version 1.0 — Genesis Edition</div>
+            <div class="cover-meta">Date: June 2026</div>
+            <div class="cover-meta">Author: Anonymous (The Recurve Collective)</div>
+            
+            <div class="cover-tagline">"The Curve Always Bends Back"</div>
+        </div>
+
+        <!-- TABLE OF CONTENTS -->
+        <div class="toc-section">
+            <h2 class="toc-title">Table of Contents</h2>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <a href="#section-1">1.0 Abstract</a>
+                </li>
+                <li class="toc-item">
+                    <a href="#section-2">2.0 The Retail Investor Problem</a>
+                    <ul class="toc-sublist">
+                        <li class="toc-subitem"><a href="#section-2-1">2.1 Market Manipulation Reality</a></li>
+                        <li class="toc-subitem"><a href="#section-2-2">2.2 The Trust Deficit</a></li>
+                        <li class="toc-subitem"><a href="#section-2-3">2.3 What Has Been Missing</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <a href="#section-3">3.0 Introducing Recurve</a>
+                    <ul class="toc-sublist">
+                        <li class="toc-subitem"><a href="#section-3-1">3.1 What Recurve Is</a></li>
+                        <li class="toc-subitem"><a href="#section-3-2">3.2 Core Principles</a></li>
+                        <li class="toc-subitem"><a href="#section-3-3">3.3 The Recurve Rage Meter</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <a href="#section-4">4.0 BendProof: The Technical Foundation</a>
+                    <ul class="toc-sublist">
+                        <li class="toc-subitem"><a href="#section-4-1">4.1 Blockchain Overview</a></li>
+                        <li class="toc-subitem"><a href="#section-4-2">4.2 BendProof Mining Algorithm</a></li>
+                        <li class="toc-subitem"><a href="#section-4-3">4.3 Network Architecture</a></li>
+                        <li class="toc-subitem"><a href="#section-4-4">4.4 Security Model</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <a href="#section-5">5.0 Supply Architecture</a>
+                    <ul class="toc-sublist">
+                        <li class="toc-subitem"><a href="#section-5-1">5.1 Total Supply</a></li>
+                        <li class="toc-subitem"><a href="#section-5-2">5.2 The Four Phases</a></li>
+                        <li class="toc-subitem"><a href="#section-5-3">5.3 Supply Distribution Table</a></li>
+                        <li class="toc-subitem"><a href="#section-5-4">5.4 Why This Model</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <a href="#section-6">6.0 Beyond the Coin</a>
+                    <ul class="toc-sublist">
+                        <li class="toc-subitem"><a href="#section-6-1">6.1 Recurve Pay</a></li>
+                        <li class="toc-subitem"><a href="#section-6-2">6.2 Recurve DAO</a></li>
+                        <li class="toc-subitem"><a href="#section-6-3">6.3 Recurve Market</a></li>
+                        <li class="toc-subitem"><a href="#section-6-4">6.4 The Rage Meter</a></li>
+                    </ul>
+                </li>
+                <li class="toc-item">
+                    <a href="#section-7">7.0 The Path Forward</a>
+                </li>
+                <li class="toc-item">
+                    <a href="#section-8">8.0 Why Anonymous</a>
+                </li>
+                <li class="toc-item">
+                    <a href="#section-9">9.0 Legal Disclaimer</a>
+                </li>
+                <li class="toc-item">
+                    <a href="#section-10">10.0 Conclusion</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- SECTION 1 -->
+        <h1 id="section-1">1.0 Abstract</h1>
+        <p>
+            The modern financial landscape, and increasingly the cryptocurrency space, is structured to favor institutional players at the expense of retail investors. Centralized exchanges, venture capital groups, and coordinated market makers construct closed loops of early allocation, asymmetric data access, and market liquidity manipulation, leaving the average individual to bear the downside of market volatility. Recurve (RCV) is introduced as an independent Layer 1 utility and transactional blockchain designed strictly to re-balance this dynamic. Built anonymously and launched without a premine, founder allocation, or venture capital backing, Recurve guarantees mathematical fairness from block zero. 
+        </p>
+        <p>
+            At the heart of Recurve is the BendProof mining system, a deterministic Scrypt-based Proof-of-Work engine designed to distribute 100% of the coin supply directly to early miners using consumer-grade hardware. By scaling difficulty parameters and subsidies across four distinct phases, BendProof protects early distribution and creates long-term protocol scarcity. Furthermore, Recurve introduces the Rage Meter, an automated, real-time mathematical index that aggregates on-chain and global market signals to measure retail market pain and expose institutional manipulation. Recurve is not merely a transactional medium; it is a community-owned technical infrastructure built for the people who have historically been left behind. The curve always bends back.
+        </p>
+
+        <!-- SECTION 2 -->
+        <h1 id="section-2">2.0 The Retail Investor Problem</h1>
+        <p>
+            The primary promise of decentralization has been compromised. The cryptocurrency market has increasingly replicated the gatekeeping and systemic asymmetries of traditional equity markets, resulting in a system where the retail public is utilized primarily as exit liquidity for institutional insiders.
+        </p>
+        
+        <h2 id="section-2-1">2.1 Market Manipulation Reality</h2>
+        <p>
+            Retail market participants operate under severe informational disadvantages. Market makers and institutional funds routinely employ algorithmic shorting strategies to hunt retail stop-losses, trigger liquidations, and buy back assets at steep discounts. Coordinated whale wallets execute synchronized dumps, leveraging massive capital reserves to cause severe panic in order-books. Furthermore, centralized exchanges have repeatedly demonstrated a systemic bias against their users. During periods of extreme volatility, prominent platforms such as FTX and Binance have frozen transactions, disabled API feeds, or halted withdrawals, leaving retail users locked out of their accounts while institutional clients settle trades through private channels. Additionally, politicians and regulatory insiders with advance knowledge of policy decisions or enforcement actions trade cryptographically-linked assets, locking in risk-free profits before public announcements are made. The retail participant is structurally bound to lose in this insider-first regime.
+        </p>
+
+        <h2 id="section-2-2">2.2 The Trust Deficit</h2>
+        <p>
+            Trust in centralized intermediaries has eroded. However, the trust deficit extends to modern decentralized protocols as well. The vast majority of layer-1 blockchains launched since 2020 are characterized by highly centralized ownership structures. Before a single block is mined, developers allocate substantial portions of the token supply to premines, private seed rounds, advisor allocations, and venture capital backers. When these chains list on public markets, early venture investors dump their tokens at multiples of their purchase prices, triggering prolonged downward pressure on public buyers. Centralized founder keys, multisig backdoors, and emergency freeze mechanisms expose "decentralized" projects as corporate entities subject to regulatory capture or developer whim. The retail public is forced to buy into a rigged cycle that repeats every bull run.
+        </p>
+
+        <h2 id="section-2-3">2.3 What Has Been Missing</h2>
+        <p>
+            A Layer 1 protocol built specifically to exclude these asymmetries has been absent. The market lacks a chain that is built for retail, by retail, with mathematical rules that prevent the introduction of early privilege. To fix this trust deficit, a protocol must contain: zero premine, zero private venture allocations, zero founder allocations, and zero administrative backdoors. Furthermore, the community requires open-source mathematical tools to measure and expose manipulation in real time, shifting the balance of power from hidden exchange boardrooms to public, auditable blockchains.
+        </p>
+
+        <!-- SECTION 3 -->
+        <h1 id="section-3">3.0 Introducing Recurve</h1>
+        <p>
+            Recurve represents a return to the foundational principles of peer-to-peer digital cash, augmented with consensus-level features designed to support retail distribution and expose market manipulation.
+        </p>
+
+        <h2 id="section-3-1">3.1 What Recurve Is</h2>
+        <p>
+            Recurve (RCV) is an independent, Layer 1 blockchain developed to prioritize open-access mining and retail utility. The protocol takes its name from the recurve bow—a structure designed to store maximum tension when pulled, only to release that energy with velocity. This metaphor represents the retail market: though pulled back and compressed by institutional forces, the curve always bends back. Launched under a pseudonym to prevent regulatory pressure or centralized coordination, Recurve operates as a pure public utility.
+        </p>
+
+        <h2 id="section-3-2">3.2 Core Principles</h2>
+        <p>
+            The protocol enforces five core architectural and economic commitments:
+        </p>
+        <ul>
+            <li><strong>NO PREMINE:</strong> The genesis block contains zero minted coins. Every RCV in existence must be earned via public CPU/GPU mining under the BendProof algorithm.</li>
+            <li><strong>NO VC FUNDING:</strong> No seed rounds, private allocations, or pre-sales were conducted. Institutional capital has no early access to the supply.</li>
+            <li><strong>NO FOUNDER KEYS:</strong> There are no developer backdoors, master nodes with special privileges, or protocol-upgrade keys. The network relies strictly on decentralized consensus.</li>
+            <li><strong>NO INFLATION:</strong> The total coin supply is capped at exactly 10,000,000,000 RCV. Once the final block reward is claimed, no new coins can ever be created.</li>
+            <li><strong>NO CENTRAL POINT OF FAILURE:</strong> The node software is designed to run on consumer hardware, encouraging a geographically distributed network of validation nodes.</li>
+        </ul>
+
+        <h2 id="section-3-3">3.3 The Recurve Rage Meter</h2>
+        <p>
+            To provide the retail community with real-time insight into market manipulation, the project integrates the Recurve Rage Meter. The Rage Meter is a publicly accessible dashboard that tracks market distress by calculating four weighted variables:
+        </p>
+        <ol>
+            <li><strong>Market Pain Score (40%):</strong> An index tracking the percentage of negative top-100 coins and their average 24-hour loss percentage.</li>
+            <li><strong>Inverted Fear & Greed (20%):</strong> An index that translates high market fear into an indicator of retail capitulation.</li>
+            <li><strong>BTC Dominance Pressure (20%):</strong> A pressure index tracking Altcoin bleeding as capital flies back to Bitcoin.</li>
+            <li><strong>Market Crash Velocity (20%):</strong> A measure of sudden, rapid drops in total market cap over a 24-hour window.</li>
+        </ol>
+        <p>
+            This score is calculated client-side and displayed transparently to expose market dumps and manipulation as they occur.
+        </p>
+
+        <!-- SECTION 4 -->
+        <h1 id="section-4">4.0 BendProof: The Technical Foundation</h1>
+        <p>
+            The Recurve network is built to prioritize technical accessibility, censorship resistance, and cryptographic stability.
+        </p>
+
+        <h2 id="section-4-1">4.1 Blockchain Overview</h2>
+        <p>
+            Recurve utilizes a UTXO transaction model, providing robust security, deterministic transaction verification, and parallel validation capabilities. The target block spacing is 60 seconds, which minimizes confirmation latency while preventing chain reorganization overhead. The difficulty adjustment algorithm uses a DigiShield retargeting calculation, adjusting the target difficulty every 60 blocks (approximately 1 hour) to react dynamically to changes in mining hash rate.
+        </p>
+
+        <h2 id="section-4-2">4.2 BendProof Mining Algorithm</h2>
+        <p>
+            BendProof is a custom-calibrated, memory-hard proof-of-work algorithm based on Scrypt. The algorithm is designed to remain memory-intensive, preventing early ASIC dominance and allowing consumer CPU and GPU hardware to compete effectively during the initial distribution phases. 
+        </p>
+        <p>
+            Additionally, BendProof implements a deterministic block subsidy schedule based on height, ensuring that the hardest phase limits are unchangeable. Difficulty limits scale across the phases to adjust the proof-of-work target dynamically relative to total coins minted. This design guarantees that as the network matures and industrial mining enters the system, early participants have already secured a significant percentage of the total supply at lower hash-power requirements.
+        </p>
+
+        <h2 id="section-4-3">4.3 Network Architecture</h2>
+        <p>
+            The main network uses dedicated parameters to prevent overlap with existing blockchains:
+        </p>
+        <ul>
+            <li><strong>P2P Port:</strong> 9444 (facilitating node-to-node communications)</li>
+            <li><strong>RPC Port:</strong> 9445 (handling API and client queries)</li>
+            <li><strong>Network Magic Bytes:</strong> `0x52 0x43 0x56 0x31` ("RCV1" in ASCII)</li>
+            <li><strong>Address Prefix:</strong> Base58 decimal 60 (generating addresses starting with "R")</li>
+            <li><strong>Spines:</strong> Peer-to-peer full validation nodes</li>
+            <li><strong>Strikes:</strong> Cryptographic blocks mined on the chain</li>
+            <li><strong>Benders:</strong> Network miners running the BendProof algorithm</li>
+        </ul>
+
+        <h2 id="section-4-4">4.4 Security Model</h2>
+        <p>
+            Recurve's security relies on the distribution of its validating nodes ("Spines"). By utilizing Scrypt-based mining that remains consumer-accessible during Phase 1, the protocol prevents hash power from consolidating in centralized server farms. A 51% attack on Recurve is prevented by the growing economic cost of acquiring decentralized CPU and GPU hash power across thousands of individual home miners. The open-source code base is public, and the absence of developer administrative keys means the blockchain cannot be frozen or updated without a consensus supermajority of the active nodes.
+        </p>
+
+        <!-- SECTION 5 -->
+        <h1 id="section-5">5.0 Supply Architecture</h1>
+        <p>
+            The economic design of Recurve ensures maximum early incentives for the retail community, followed by a sharp block reward tapering to enforce long-term scarcity.
+        </p>
+
+        <h2 id="section-5-1">5.1 Total Supply</h2>
+        <p>
+            The maximum lifetime supply is hard-capped at 10,000,000,000 RCV (10 Billion). There is no premine, meaning that at genesis, the active circulating supply is exactly 0. Coins can only be introduced into circulation via block rewards earned by miners.
+        </p>
+
+        <h2 id="section-5-2">5.2 The Four Phases</h2>
+        <p>
+            The BendProof reward schedule is divided into four distinct phases designed to align incentives with network maturity:
+        </p>
+        <p>
+            <strong>Phase 1: "The Awakening" (Strikes 0 to 400,000)</strong><br>
+            During this phase, each block provides a reward of 10,000 RCV. A total of 4,000,000,000 RCV is minted. The algorithm remains highly accessible, allowing standard CPUs and laptop hardware to participate. The objective is to distribute the initial supply as widely as possible to the retail public.
+        </p>
+        <p>
+            <strong>Phase 2: "The Resistance" (Strikes 400,001 to 1,000,000)</strong><br>
+            The reward is reduced to 5,000 RCV per block, minting an additional 3,000,000,000 RCV. As network hash rate grows, consumer-grade GPUs are recommended to remain competitive. This phase marks the growth of the node validator ecosystem.
+        </p>
+        <p>
+            <strong>Phase 3: "The Reckoning" (Strikes 1,000,001 to 3,000,000)</strong><br>
+            The reward drops to 1,000 RCV per block, releasing 2,000,000,000 RCV into circulation. Mining difficulty increases, and dedicated mining rigs become active. Scarcity parameters begin to impact circulating supply dynamics.
+        </p>
+        <p>
+            <strong>Phase 4: "The Vault" (Strikes 3,000,001 to 13,000,000)</strong><br>
+            The final phase provides a block reward of 100 RCV, minting the final 1,000,000,000 RCV over a period of approximately 19 years. Mining requires industrial hardware. The low emission rate enforces extreme protocol scarcity. Once Strike 13,000,000 is reached, the block reward drops to 0 RCV forever.
+        </p>
+
+        <h2 id="section-5-3">5.3 Supply Distribution Table</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Phase</th>
+                    <th>Strikes (Block Range)</th>
+                    <th>Block Reward</th>
+                    <th>Phase Supply Mined</th>
+                    <th>Cumulative Supply</th>
+                    <th>% of Total Supply</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Phase 1: The Awakening</td>
+                    <td>0 – 400,000</td>
+                    <td>10,000 RCV</td>
+                    <td>4,000,000,000 RCV</td>
+                    <td>4,000,000,000 RCV</td>
+                    <td>40.0%</td>
+                </tr>
+                <tr>
+                    <td>Phase 2: The Resistance</td>
+                    <td>400,001 – 1,000,000</td>
+                    <td>5,000 RCV</td>
+                    <td>3,000,000,000 RCV</td>
+                    <td>7,000,000,000 RCV</td>
+                    <td>70.0%</td>
+                </tr>
+                <tr>
+                    <td>Phase 3: The Reckoning</td>
+                    <td>1,000,001 – 3,000,000</td>
+                    <td>1,000 RCV</td>
+                    <td>2,000,000,000 RCV</td>
+                    <td>9,000,000,000 RCV</td>
+                    <td>90.0%</td>
+                </tr>
+                <tr>
+                    <td>Phase 4: The Vault</td>
+                    <td>3,000,001 – 13,000,000</td>
+                    <td>100 RCV</td>
+                    <td>1,000,000,000 RCV</td>
+                    <td>10,000,000,000 RCV</td>
+                    <td>100.0%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="section-5-4">5.4 Why This Model</h2>
+        <p>
+            Unlike premined tokens where insiders dump on the market post-launch, Recurve's progressive emission ensures that only active network participants receive coins. In traditional block halving schedules, early emission is often too scarce to incentivize wide retail adoption, whereas Recurve concentrates 70% of the lifetime supply in the first two phases. This model prioritizes the community, rewarding those who believe in the protocol first.
+        </p>
+
+        <!-- SECTION 6 -->
+        <h1 id="section-6">6.0 Beyond the Coin</h1>
+        <p>
+            Recurve is designed to support a practical, censorship-resistant digital ecosystem that extends beyond speculative trading.
+        </p>
+
+        <h2 id="section-6-1">6.1 Recurve Pay</h2>
+        <p>
+            Recurve Pay is a proposed standard for merchants wishing to accept RCV payments. By utilizing the 60-second block confirmation window, Recurve Pay allows merchants to settle transactions at negligible network fees, circumventing traditional credit card networks and centralized merchant acquirers.
+        </p>
+
+        <h2 id="section-6-2">6.2 Recurve DAO</h2>
+        <p>
+            Ecosystem governance will be coordinated through the Recurve DAO. Node operators ("Spines") and miners ("Benders") can draft and vote on core protocol adjustments. The network relies on a strict proof-of-node mechanism for voting, preventing capital centralization from overriding community intent.
+        </p>
+
+        <h2 id="section-6-3">6.3 Recurve Market</h2>
+        <p>
+            The Recurve Market is a proposed decentralized trading protocol built on top of the Layer 1 chain. The market will support atomic swaps and peer-to-peer order book matching, ensuring that RCV and its tokens can be traded securely without KYC, counterparty risk, or administrative halts.
+        </p>
+
+        <h2 id="section-6-4">6.4 The Rage Meter</h2>
+        <p>
+            The Rage Meter serves as the public diagnostic tool for the ecosystem. It is accessible globally without subscription fees, providing users with a quantitative representation of retail market strain. This tool is designed to help the community recognize and avoid institutional liquidation traps.
+        </p>
+
+        <!-- SECTION 7 -->
+        <h1 id="section-7">7.0 The Path Forward</h1>
+        <div class="roadmap-timeline">
+            <!-- Node 1 -->
+            <div class="roadmap-node completed">
+                <div class="roadmap-title">Q2 2026 — Genesis <span class="status-badge done">Completed</span></div>
+                <div class="roadmap-desc">Blockchain protocol finalized, BendProof algorithm implemented, mainnet genesis block mined, and the Rage Meter tracking dashboard launched.</div>
+            </div>
+            <!-- Node 2 -->
+            <div class="roadmap-node">
+                <div class="roadmap-title">Q3 2026 — The Awakening <span class="status-badge pending">Pending</span></div>
+                <div class="roadmap-desc">Public mining pools open for Phase 1 distribution. Target Spine node count of 50+ globally. Launch of community communication channels.</div>
+            </div>
+            <!-- Node 3 -->
+            <div class="roadmap-node">
+                <div class="roadmap-title">Q4 2026 — The Resistance <span class="status-badge pending">Pending</span></div>
+                <div class="roadmap-desc">Transition to Phase 2 mining. Release of the Recurve Pay beta integration. Node count expansion to 500+ active validators.</div>
+            </div>
+            <!-- Node 4 -->
+            <div class="roadmap-node">
+                <div class="roadmap-title">Q1 2027 — The Reckoning <span class="status-badge pending">Pending</span></div>
+                <div class="roadmap-desc">Transition to Phase 3 mining. Recurve DAO governance contract activation. Initial decentralized exchange market listings.</div>
+            </div>
+            <!-- Node 5 -->
+            <div class="roadmap-node">
+                <div class="roadmap-title">2027 and Beyond — The Vault <span class="status-badge pending">Pending</span></div>
+                <div class="roadmap-desc">Phase 4 mining activation. Integration of the Recurve Market DEX. Long-term stabilization of the 10 Billion supply cap.</div>
+            </div>
+        </div>
+
+        <!-- SECTION 8 -->
+        <h1 id="section-8">8.0 Why Anonymous</h1>
+        <p>
+            Decentralization requires the removal of the founder figure. Following the precedent established by Satoshi Nakamoto, the creators of Recurve have chosen to remain completely anonymous. By removing any central point of authority, the network is shielded from legal, regulatory, or corporate coercion. No state actor or institutional competitor can arrest, bribe, or threaten the founders, because there are no founders to target. 
+        </p>
+        <p>
+            The code is the law, and its execution is governed strictly by the peer-to-peer consensus of the network nodes. The ownership of the Recurve protocol rests entirely with the community of Spines and Benders. Any communication from the core development collective will occur strictly through verified, cryptographic signatures, ensuring that the network remains decentralized, autonomous, and unstoppable.
+        </p>
+
+        <!-- SECTION 9 -->
+        <h1 id="section-9">9.0 Legal Disclaimer</h1>
+        <div class="disclaimer-section">
+            The Recurve (RCV) blockchain is an open-source, decentralized project developed and maintained by a distributed network of anonymous participants. The information contained in this whitepaper is provided for informational and educational purposes only and does not constitute financial, investment, legal, or tax advice. Mined RCV tokens are utility-based digital assets designed to settle peer-to-peer network transaction costs and are not representations of equity, debt, or financial claims on any entity. Participating in decentralized blockchain systems and proof-of-work mining involves significant technical, operational, and market risk. The founders and collective make no representations, warranties, or guarantees regarding the future value, utility, or technical performance of the protocol. Users are solely responsible for ensuring compliance with all local laws and regulatory requirements governing the ownership, transfers, and mining of digital assets in their respective jurisdictions.
+        </div>
+
+        <!-- SECTION 10 -->
+        <h1 id="section-10">10.0 Conclusion</h1>
+        <p>
+            Financial systems are built to extract value from the majority to enrich the few. Recurve is designed to break this dynamic. By combining a zero-premine distribution model, a consumer-accessible mining algorithm, and real-time diagnostic tools to track market manipulation, the protocol provides retail participants with a fair, sovereign transactional network.
+        </p>
+        <p>
+            The path forward is defined by active participation: mine the block space, validate the transaction history, and build peer-to-peer utility. The economic rules are written in genesis and cannot be altered by capital or authority.
+        </p>
+        <blockquote>
+            "The curve always bends back."
+        </blockquote>
+        <p style="text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; margin-top: 50px;">
+            Genesis Block Signature:<br>
+            <span style="color: var(--accent-color); font-size: 0.95rem;">0d65b0a680be1b66a2512859bd60d821bad101d8dfb47ab8d3529acb55b94581</span>
+        </p>
+        <p style="text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 600; color: var(--dim-text);">
+            — The Recurve Collective, June 2026
+        </p>
+
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+
+        // Restore theme
+        if (localStorage.getItem('paper-theme') === 'dark') {
+            document.body.className = 'dark-mode';
+            themeToggle.innerText = '☀️';
+        } else {
+            document.body.className = 'light-mode';
+            themeToggle.innerText = '🌙';
+        }
+
+        // Toggle theme handler
+        themeToggle.addEventListener('click', () => {
+            if (document.body.className === 'light-mode') {
+                document.body.className = 'dark-mode';
+                localStorage.setItem('paper-theme', 'dark');
+                themeToggle.innerText = '☀️';
+            } else {
+                document.body.className = 'light-mode';
+                localStorage.setItem('paper-theme', 'light');
+                themeToggle.innerText = '🌙';
+            }
+        });
+    </script>
+</body>
+</html>

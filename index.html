@@ -1,0 +1,2528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recurve (RCV) — The Curve Always Bends Back</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Recurve (RCV) is a decentralized L1 blockchain built by the people who lost, for the people who will not lose again. No premine, no VC, no founders allocation.">
+    <meta property="og:title" content="Recurve (RCV) — The Curve Always Bends Back">
+    <meta property="og:description" content="A revolutionary decentralized network driven entirely by mathematical fairness and retail empowerment.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0A0A0A;
+            --primary-red: #FF0000;
+            --ember-orange: #FF4500;
+            --white: #FFFFFF;
+            --dim-text: #888888;
+            --card-bg: #111111;
+            --green: #00FF88;
+            --yellow: #FFD700;
+            --border-red: rgba(255, 0, 0, 0.2);
+            --glow-red: rgba(255, 0, 0, 0.4);
+            --grid-color: rgba(255, 0, 0, 0.03);
+            --bg-alt: #0c0c0c;
+            --bg-purpose: #080808;
+            --border-white: rgba(255, 255, 255, 0.03);
+            --nav-scrolled-bg: rgba(10, 10, 10, 0.95);
+            --nav-mobile-bg: rgba(10, 10, 10, 0.98);
+            --rage-embed-bg: rgba(10, 10, 10, 0.8);
+            --footer-bg: #050505;
+            --reality-card-bg: #0F0F0F;
+        }
+
+        body.light-mode {
+            --bg-color: #F5F5F5;
+            --white: #1A1A1A;
+            --dim-text: #555555;
+            --card-bg: #FFFFFF;
+            --border-red: rgba(255, 0, 0, 0.15);
+            --glow-red: rgba(255, 0, 0, 0.1);
+            --grid-color: rgba(255, 0, 0, 0.06);
+            --bg-alt: #EAEAEA;
+            --bg-purpose: #F0F0F0;
+            --border-white: rgba(0, 0, 0, 0.08);
+            --nav-scrolled-bg: rgba(245, 245, 245, 0.95);
+            --nav-mobile-bg: rgba(245, 245, 245, 0.98);
+            --rage-embed-bg: rgba(245, 245, 245, 0.8);
+            --footer-bg: #EAEAEA;
+            --reality-card-bg: #FFFFFF;
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--white);
+            color: var(--white);
+            padding: 6px 12px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            background-color: var(--white) !important;
+            color: var(--bg-color) !important;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Subtle animated diagonal grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                linear-gradient(45deg, var(--grid-color) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--grid-color) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--grid-color) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--grid-color) 75%);
+            background-size: 60px 60px;
+            z-index: -10;
+            pointer-events: none;
+            animation: diagonalGridAnimation 30s linear infinite;
+        }
+
+        @keyframes diagonalGridAnimation {
+            from {
+                transform: rotate(0deg) translate(0, 0);
+            }
+            to {
+                transform: rotate(0deg) translate(60px, 60px);
+            }
+        }
+
+        /* Container helper */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: transparent;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        nav.scrolled {
+            background: var(--nav-scrolled-bg);
+            backdrop-filter: blur(10px);
+            border-color: rgba(255, 0, 0, 0.15);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            text-decoration: none;
+            letter-spacing: 2px;
+            transition: text-shadow 0.3s ease;
+        }
+
+        .logo:hover {
+            text-shadow: 0 0 15px var(--primary-red);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--white);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-red);
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Mobile Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+            padding: 4px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 28px;
+            height: 2px;
+            background-color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        /* SECTION 1 — HERO */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding-top: 100px;
+            padding-bottom: 60px;
+            box-sizing: border-box;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-label {
+            font-family: 'Rajdhani', sans-serif;
+            color: var(--primary-red);
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            display: block;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+
+        h1.hero-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.05;
+            color: var(--white);
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .hero-subheading {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--dim-text);
+            margin-bottom: 40px;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 16px 36px;
+            border-radius: 0;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-filled {
+            background-color: var(--primary-red);
+            color: var(--white);
+            border: 2px solid var(--primary-red);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+
+        .btn-filled:hover {
+            background-color: transparent;
+            color: var(--primary-red);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.8), 0 0 40px rgba(255, 69, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-red);
+            border: 2px solid var(--primary-red);
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.1);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-red);
+            color: var(--white);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .hero-badges-text {
+            font-size: 0.9rem;
+            color: var(--dim-text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.8;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--dim-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .scroll-indicator:hover {
+            color: var(--primary-red);
+        }
+
+        .scroll-arrow {
+            width: 24px;
+            height: 24px;
+            border-left: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: rotate(-45deg);
+            animation: bounceArrow 2s infinite;
+        }
+
+        @keyframes bounceArrow {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) rotate(-45deg);
+            }
+            40% {
+                transform: translateY(-10px) rotate(-45deg);
+            }
+            60% {
+                transform: translateY(-5px) rotate(-45deg);
+            }
+        }
+
+        /* SECTION STYLING GENERAL */
+        section {
+            padding: 100px 0;
+            position: relative;
+            border-top: 1px solid var(--border-white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--white);
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 1.15rem;
+            color: var(--dim-text);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* SECTION 2 — LIVE RAGE METER EMBED */
+        #rage-embed {
+            border-top: 2px solid var(--primary-red);
+            background: var(--rage-embed-bg);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-red);
+            padding: 36px 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .metric-card:hover {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 20px var(--glow-red);
+            transform: translateY(-3px);
+        }
+
+        .metric-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--white);
+            font-feature-settings: "tnum";
+        }
+
+        .metric-label {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--dim-text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .metric-footer {
+            text-align: center;
+        }
+
+        /* SECTION 3 — WHY RECURVE */
+        #why-recurve {
+            background-color: var(--bg-alt);
+        }
+
+        .columns-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .col-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-white);
+            padding: 40px 32px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .col-card:hover {
+            border-color: rgba(255, 0, 0, 0.2);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
+        }
+
+        .icon-container {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            height: 48px;
+        }
+
+        /* CSS Shapes */
+        .bow-shape {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--primary-red);
+            border-radius: 50%;
+            border-right-color: transparent;
+            transform: rotate(45deg);
+        }
+
+        .bow-shape::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 44px;
+            height: 3px;
+            background-color: var(--primary-red);
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        .shield-shape {
+            position: relative;
+            width: 28px;
+            height: 32px;
+            border: 3px solid var(--primary-red);
+            border-top: none;
+            border-bottom-left-radius: 50% 100%;
+            border-bottom-right-radius: 50% 100%;
+        }
+
+        .shield-shape::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -3px;
+            width: 28px;
+            height: 3px;
+            background-color: var(--primary-red);
+        }
+
+        .chain-shape {
+            position: relative;
+            width: 36px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chain-link {
+            width: 14px;
+            height: 24px;
+            border: 3px solid var(--primary-red);
+            border-radius: 8px;
+            position: absolute;
+        }
+
+        .chain-link-1 {
+            transform: rotate(45deg) translate(-4px, -2px);
+        }
+
+        .chain-link-2 {
+            transform: rotate(45deg) translate(8px, 4px);
+        }
+
+        .col-card-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--white);
+        }
+
+        .col-card-text {
+            font-size: 1rem;
+            color: var(--dim-text);
+            line-height: 1.6;
+        }
+
+        /* SECTION 4 — BENDPROOF MINING PHASES */
+        #phases {
+            background-color: var(--bg-color);
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 135px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-red) 0%, var(--ember-orange) 50%, rgba(255,0,0,0.1) 100%);
+            z-index: 1;
+        }
+
+        .phase-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-white);
+            padding: 30px 24px;
+            flex: 1;
+            z-index: 2;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .phase-card:hover {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 20px var(--glow-red);
+            transform: translateY(-5px);
+        }
+
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .phase-badge {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 0px;
+            letter-spacing: 1px;
+        }
+
+        .badge-active {
+            background-color: rgba(0, 255, 136, 0.15);
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .badge-upcoming {
+            background-color: rgba(255, 215, 0, 0.15);
+            color: var(--yellow);
+            border: 1px solid var(--yellow);
+        }
+
+        .badge-future {
+            background-color: rgba(136, 136, 136, 0.15);
+            color: #888888;
+            border: 1px solid #888888;
+        }
+
+        .badge-mythological {
+            background-color: rgba(150, 0, 0, 0.3);
+            color: #FF3333;
+            border: 1px solid #FF3333;
+        }
+
+        .phase-number {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            color: var(--primary-red);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .phase-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+        }
+
+        .phase-spec-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid var(--border-white);
+            padding-top: 20px;
+        }
+
+        .phase-spec-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .phase-spec-label {
+            color: var(--dim-text);
+        }
+
+        .phase-spec-val {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .phases-footer {
+            text-align: center;
+            margin-top: 48px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dim-text);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* SECTION 5 — TECHNICAL SPECS */
+        #specs {
+            background-color: var(--bg-alt);
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .specs-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .spec-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border-red);
+        }
+
+        .spec-label {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--dim-text);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .spec-value {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--white);
+            text-align: right;
+            word-break: break-all;
+        }
+
+        /* SECTION 6 — GET INVOLVED */
+        #get-involved {
+            background-color: var(--bg-color);
+        }
+
+        .involved-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .involved-card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 0, 0, 0.15);
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .involved-card:hover {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 20px var(--glow-red);
+            transform: translateY(-4px);
+        }
+
+        .involved-card .icon-container {
+            margin-bottom: 28px;
+        }
+
+        .cpu-shape {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--primary-red);
+        }
+
+        .cpu-shape::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: -8px;
+            width: 42px;
+            height: 18px;
+            border-top: 3px solid var(--primary-red);
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .cpu-shape::after {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: -8px;
+            width: 18px;
+            height: 42px;
+            border-left: 3px solid var(--primary-red);
+            border-right: 3px solid var(--primary-red);
+        }
+
+        .doc-shape {
+            position: relative;
+            width: 24px;
+            height: 32px;
+            border: 3px solid var(--primary-red);
+            border-top-right-radius: 6px;
+        }
+
+        .doc-shape::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--bg-color);
+            border-left: 3px solid var(--primary-red);
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .code-shape {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            letter-spacing: -2px;
+        }
+
+        .involved-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .involved-text {
+            font-size: 0.95rem;
+            color: var(--dim-text);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            flex-grow: 1;
+        }
+
+        /* SECTION 7 — MINING GUIDE */
+        #mining-guide {
+            background-color: var(--bg-alt);
+        }
+
+        .guide-step {
+            margin-bottom: 40px;
+        }
+
+        .guide-step-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--white);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .guide-step-num {
+            background-color: var(--primary-red);
+            color: var(--white);
+            font-size: 0.95rem;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .terminal-box {
+            background-color: #000000;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            padding: 24px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: var(--green);
+            overflow-x: auto;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .terminal-line {
+            margin-bottom: 8px;
+            white-space: pre;
+        }
+
+        .terminal-comment {
+            color: #666666;
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: var(--primary-red);
+            margin-left: 4px;
+            animation: blink 1s infinite steps(2, start);
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            to { visibility: hidden; }
+        }
+
+        .guide-note {
+            margin-top: 40px;
+            background: rgba(255, 0, 0, 0.05);
+            border-left: 3px solid var(--primary-red);
+            padding: 20px;
+            font-size: 0.95rem;
+            color: var(--dim-text);
+            line-height: 1.5;
+        }
+
+        /* SECTION 8 — FOOTER */
+        footer {
+            background-color: var(--footer-bg);
+            border-top: 2px solid var(--primary-red);
+            padding: 80px 0 30px 0;
+            transition: background-color 0.5s ease;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+            margin-bottom: 60px;
+        }
+
+        .footer-left h4 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+
+        .footer-left p {
+            font-size: 0.95rem;
+            color: var(--dim-text);
+            line-height: 1.8;
+        }
+
+        .footer-center h5, .footer-right h5 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+            color: var(--white);
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            color: var(--dim-text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-red);
+        }
+
+        .footer-right p {
+            font-size: 0.95rem;
+            color: var(--dim-text);
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-white);
+            padding-top: 30px;
+            text-align: center;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            color: var(--dim-text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* ANIMATIONS (SCROLL INTERSECTION EFFECTS) */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Spec boxes slide in from left effect */
+        .spec-item-anim {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .spec-item-anim.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Fade-in for Hero load */
+        .hero-fade-1 {
+            opacity: 0;
+            animation: heroFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.1s;
+        }
+
+        .hero-fade-2 {
+            opacity: 0;
+            animation: heroFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.3s;
+        }
+
+        .hero-fade-3 {
+            opacity: 0;
+            animation: heroFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes heroFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVE LAYOUTS */
+        @media (max-width: 1024px) {
+            h1.hero-title {
+                font-size: 4rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .columns-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .involved-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1.hero-title {
+                font-size: 3rem;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--nav-mobile-bg);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 40px;
+                transition: left 0.3s ease;
+                border-top: 1px solid rgba(255, 0, 0, 0.15);
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .timeline {
+                flex-direction: column;
+            }
+
+            .timeline::before {
+                top: 0;
+                left: 20px;
+                width: 2px;
+                height: 100%;
+                transform: translateX(-50%);
+            }
+
+            .phase-card {
+                margin-left: 40px;
+            }
+
+            .specs-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        /* PURPOSE SECTION */
+        #purpose {
+            background-color: var(--bg-purpose);
+            border-top: 2px solid var(--primary-red);
+            padding: 100px 0;
+        }
+
+        .reality-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 48px;
+            margin-bottom: 48px;
+        }
+
+        .reality-card {
+            background-color: var(--reality-card-bg);
+            border-left: 4px solid var(--primary-red);
+            border-top: 1px solid var(--border-white);
+            border-right: 1px solid var(--border-white);
+            border-bottom: 1px solid var(--border-white);
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .reality-card:hover {
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .reality-card-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+
+        .reality-card-text {
+            font-size: 0.95rem;
+            color: var(--dim-text);
+            line-height: 1.6;
+        }
+
+        .reality-banner {
+            text-align: center;
+            background: linear-gradient(90deg, rgba(255, 0, 0, 0.05) 0%, rgba(255, 0, 0, 0.15) 50%, rgba(255, 0, 0, 0.05) 100%);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            padding: 32px 24px;
+            margin-top: 60px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.4;
+        }
+
+        .purpose-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+            margin: 80px 0;
+            width: 100%;
+        }
+
+        .purpose-heading {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .purpose-heading span.red {
+            color: var(--primary-red);
+        }
+
+        .purpose-heading span.white {
+            color: var(--white);
+        }
+
+        .purpose-subtext {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--white);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .purpose-paragraphs {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            font-size: 1.15rem;
+            color: var(--dim-text);
+            line-height: 1.8;
+        }
+
+        .community-strike-box {
+            font-size: 1.2rem;
+            color: var(--white);
+            line-height: 1.8;
+            border-left: 3px solid var(--primary-red);
+            padding-left: 24px;
+        }
+
+        /* 3 horizontal action steps with arrows */
+        .action-steps-row {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 40px 0;
+        }
+
+        .action-step-card {
+            background-color: var(--bg-alt);
+            border: 1px solid var(--border-white);
+            padding: 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .action-step-card h4 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .action-step-card p {
+            font-size: 0.95rem;
+            color: var(--dim-text);
+            line-height: 1.6;
+        }
+
+        .step-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary-red);
+            user-select: none;
+            transition: transform 0.3s ease;
+        }
+
+        .goal-box {
+            background-color: var(--bg-alt);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            padding: 48px;
+            text-align: center;
+            position: relative;
+        }
+
+        .goal-box::before {
+            content: '[';
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            font-size: 2.5rem;
+            color: var(--primary-red);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 300;
+        }
+
+        .goal-box::after {
+            content: ']';
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            font-size: 2.5rem;
+            color: var(--primary-red);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 300;
+        }
+
+        .goal-box h4 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dim-text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .goal-box .goal-highlight {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+
+        .goal-box p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--white);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .rage-connection-box {
+            background-color: rgba(255, 0, 0, 0.04);
+            border: 1px solid var(--primary-red);
+            padding: 32px;
+            margin-top: 20px;
+        }
+
+        .rage-connection-box h4 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+
+        .rage-connection-box p {
+            color: var(--white);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* DONATE SECTION */
+        .donate-container {
+            margin-top: 80px;
+            width: 100%;
+        }
+
+        .donate-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--primary-red);
+            box-shadow: 0 0 25px var(--glow-red);
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .donate-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .donate-subtitle {
+            font-size: 0.95rem;
+            color: var(--dim-text);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .address-box-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #FF0000;
+            background-color: #0F0F0F;
+            margin-bottom: 8px;
+        }
+
+        .address-text {
+            flex-grow: 1;
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: #FFFFFF;
+            padding: 14px;
+            text-align: left;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .copy-btn {
+            background-color: transparent;
+            border: 1px solid #FF0000;
+            color: #FF0000;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            padding: 8px 16px;
+            margin: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .copy-btn:hover {
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+
+        .clip-icon {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .donate-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .donate-tab {
+            flex: 1;
+            min-width: 60px;
+            padding: 10px 6px;
+            background-color: #1A1A1A;
+            color: #888888;
+            border: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .donate-tab.active {
+            background-color: #FF0000;
+            color: #FFFFFF;
+        }
+
+        .donate-tab:hover:not(.active) {
+            background-color: #2a2a2a;
+            color: #cccccc;
+        }
+
+        .address-label {
+            font-size: 0.85rem;
+            color: var(--dim-text);
+            margin-bottom: 24px;
+            text-align: left;
+            padding-left: 4px;
+        }
+
+        .donate-desc {
+            font-size: 0.85rem;
+            color: var(--dim-text);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .accepted-assets {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .donate-note-bottom {
+            font-size: 0.85rem;
+            color: var(--dim-text);
+            font-style: italic;
+        }
+
+        /* CSS shapes for reality cards */
+        .bank-shape {
+            position: relative;
+            width: 32px;
+            height: 32px;
+        }
+        .bank-shape::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 16px solid transparent;
+            border-right: 16px solid transparent;
+            border-bottom: 10px solid var(--primary-red);
+        }
+        .bank-shape::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 4px;
+            width: 24px;
+            height: 18px;
+            border-top: 3px solid var(--primary-red);
+            border-bottom: 4px solid var(--primary-red);
+            background: 
+                linear-gradient(90deg, var(--primary-red) 3px, transparent 3px) 0 0/6px 100%,
+                linear-gradient(90deg, var(--primary-red) 3px, transparent 3px) 8px 0/6px 100%,
+                linear-gradient(90deg, var(--primary-red) 3px, transparent 3px) 16px 0/6px 100%;
+            background-repeat: no-repeat;
+        }
+
+        .lock-shape {
+            position: relative;
+            width: 24px;
+            height: 20px;
+            background: transparent;
+            border: 3px solid var(--primary-red);
+            margin-top: 10px;
+        }
+        .lock-shape::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 3px;
+            width: 12px;
+            height: 12px;
+            border: 3px solid var(--primary-red);
+            border-bottom: none;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+        }
+
+        .wave-shape {
+            position: relative;
+            width: 32px;
+            height: 16px;
+            border-bottom: 3px solid var(--primary-red);
+            border-radius: 0 0 8px 8px;
+            transform: skewY(-10deg);
+            margin-top: 8px;
+        }
+        .wave-shape::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 6px;
+            width: 20px;
+            height: 10px;
+            border-bottom: 3px solid var(--primary-red);
+            border-radius: 0 0 6px 6px;
+        }
+
+        .gov-shape {
+            position: relative;
+            width: 32px;
+            height: 32px;
+        }
+        .gov-shape::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50% 50% 0 0;
+            border: 3px solid var(--primary-red);
+            border-bottom: none;
+        }
+        .gov-shape::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 32px;
+            height: 16px;
+            border-top: 3px solid var(--primary-red);
+            border-bottom: 4px solid var(--primary-red);
+            background: 
+                linear-gradient(90deg, var(--primary-red) 3px, transparent 3px) 3px 0/8px 100%,
+                linear-gradient(90deg, var(--primary-red) 3px, transparent 3px) 13px 0/8px 100%,
+                linear-gradient(90deg, var(--primary-red) 3px, transparent 3px) 23px 0/8px 100%;
+            background-repeat: no-repeat;
+        }
+
+        @media (max-width: 768px) {
+            .reality-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-steps-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .step-arrow {
+                transform: rotate(90deg);
+                margin: 4px 0;
+            }
+            .purpose-heading {
+                font-size: 2.5rem;
+            }
+            .goal-box .goal-highlight {
+                font-size: 2rem;
+            }
+            .goal-box {
+                padding: 24px;
+            }
+        }
+
+        .footer-grid {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+    }
+</style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">}{ RCV }{</a>
+            <button class="hamburger" id="hamburger-btn" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="nav-menu">
+                <li><a href="whitepaper.html">Whitepaper</a></li>
+                <li><a href="rage-meter.html">Rage Meter</a></li>
+                <li><a href="https://github.com/RecurveRCV/recurve-core" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href="#mining-guide">Mining Guide</a></li>
+                <li><button class="theme-btn" id="theme-toggle">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- SECTION 1 — HERO -->
+    <header id="hero">
+        <div class="container hero-content">
+            <span class="hero-label hero-fade-1">RETAIL REVOLUTION</span>
+            <h1 class="hero-title hero-fade-2">THE CURVE ALWAYS<br>BENDS BACK</h1>
+            <p class="hero-subheading hero-fade-2">
+                Recurve (RCV) — A decentralized blockchain built by the people who lost. For the people who will not lose again.
+            </p>
+            <div class="hero-buttons hero-fade-3">
+                <a href="whitepaper.html" class="btn btn-filled">READ WHITEPAPER</a>
+                <a href="#purpose" class="btn btn-outline">OUR PURPOSE</a>
+                <a href="rage-meter.html" class="btn btn-outline">VIEW RAGE METER</a>
+            </div>
+            <p class="hero-badges-text hero-fade-3">
+                No premine. No VC. No founders allocation.<br>Anonymous. Decentralized. Unstoppable.
+            </p>
+        </div>
+        <a href="#purpose" class="scroll-indicator" aria-label="Scroll Down">
+            <div class="scroll-arrow"></div>
+        </a>
+    </header>
+
+    <!-- SECTION 1.5 — OUR PURPOSE -->
+    <section id="purpose" class="fade-in-section">
+        <div class="container">
+            <!-- PART 1: THE REALITY -->
+            <div class="section-header">
+                <span class="hero-label">THE TRUTH THEY DON'T WANT YOU TO SEE</span>
+                <h2 class="section-title">While You Were Sleeping,<br>They Were Stealing.</h2>
+            </div>
+
+            <div class="reality-grid">
+                <!-- Card 1 -->
+                <div class="reality-card">
+                    <div class="icon-container">
+                        <div class="bank-shape"></div>
+                    </div>
+                    <h3 class="reality-card-title">Institutions Enter. Retail Gets Wrecked.</h3>
+                    <p class="reality-card-text">
+                        BlackRock, Fidelity, Goldman Sachs — the same institutions that called crypto a scam now hold billions in Bitcoin ETFs. They waited. They watched retail buy the tops. Then they entered at the bottom after engineering the crash. This is not coincidence. This is strategy. Your loss was their entry point.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="reality-card">
+                    <div class="icon-container">
+                        <div class="lock-shape"></div>
+                    </div>
+                    <h3 class="reality-card-title">Exchanges Halt. You Can't Sell. They Can.</h3>
+                    <p class="reality-card-text">
+                        FTX halted withdrawals while insiders moved funds. Binance has paused trading at critical moments. Robinhood blocked GameStop buys to protect hedge funds. The exchange is not your friend. It is a casino that can change the rules while you are at the table. Your stop loss means nothing when they pull the plug.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="reality-card">
+                    <div class="icon-container">
+                        <div class="wave-shape"></div>
+                    </div>
+                    <h3 class="reality-card-title">Coordinated Dumps Are Real. You Are The Exit.</h3>
+                    <p class="reality-card-text">
+                        On-chain data shows wallets coordinating massive sells within seconds of each other. No human reaction time — automated, planned, executed. Retail sees a candle. Whales see a harvest. Every major crash has wallet clusters that sold the exact top. You funded their next accumulation. Unknowingly. Every time.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="reality-card">
+                    <div class="icon-container">
+                        <div class="gov-shape"></div>
+                    </div>
+                    <h3 class="reality-card-title">Politicians Pump. You Buy The Top.</h3>
+                    <p class="reality-card-text">
+                        US senators have traded crypto assets days before favorable legislation announcements. Crypto projects have paid for political access. Insider knowledge flows from regulators to funds to exchanges before it reaches you. By the time you read the news — they already sold. The game is rigged at every level. This is not paranoia. This is documented, on-chain, undeniable fact.
+                    </p>
+                </div>
+            </div>
+
+            <div class="reality-banner">
+                You didn't lose because you made bad decisions.<br>
+                You lost because the game was designed for you to lose.
+            </div>
+
+            <div class="purpose-divider"></div>
+
+            <!-- PART 2: THE PURPOSE -->
+            <div class="section-header" style="margin-bottom: 40px;">
+                <span class="hero-label">THE RECURVE ANSWER</span>
+                <h2 class="purpose-heading">
+                    <span class="red">Recurve.</span> <span class="white">The Revenge.</span>
+                </h2>
+                <p class="purpose-subtext">We are not victims. We are the counter-attack.</p>
+            </div>
+
+            <div class="purpose-paragraphs">
+                <div class="community-strike-box">
+                    <strong>THE COMMUNITY STRIKE:</strong><br>
+                    Every wallet that holds RCV is a vote against manipulation. Every mined block is a block they did not control. We are building something they cannot buy, cannot halt, and cannot shut down. A blockchain owned entirely by the people who lost — and who refused to accept that loss as final.
+                </div>
+
+                <div>
+                    <strong style="color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 20px;">HOW YOU JOIN THE STRIKE:</strong>
+                    <div class="action-steps-row">
+                        <!-- Step 1 -->
+                        <div class="action-step-card">
+                            <h4>MINE OR BUY</h4>
+                            <p>Start with $1 or with your laptop CPU. Phase 1 mining is open to everyone. 10,000 RCV per Strike. No barriers.</p>
+                        </div>
+                        
+                        <div class="step-arrow">→</div>
+
+                        <!-- Step 2 -->
+                        <div class="action-step-card">
+                            <h4>HOLD WITH THE COMMUNITY</h4>
+                            <p>Every holder strengthens every other holder. No VC can dump on us — there are none. No founder allocation — there is none. Pure community supply. Pure community price.</p>
+                        </div>
+
+                        <div class="step-arrow">→</div>
+
+                        <!-- Step 3 -->
+                        <div class="action-step-card">
+                            <h4>BUILD COLLECTIVE WEALTH</h4>
+                            <p>As RCV grows — and it grows because WE build it — the retail community accumulates wealth that was stolen from us cycle after cycle. When institutions finally want in — WE set the price. Not them.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="goal-box">
+                    <h4>Our goal is simple and audacious:</h4>
+                    <div class="goal-highlight">TOP 10 CRYPTOCURRENCY</div>
+                    <p>
+                        Not because someone pumped it. Not because a VC backed it. Because millions of retail investors, each contributing what they can, built something the institutions could not manufacture — <strong>GENUINE COMMUNITY WEALTH.</strong>
+                    </p>
+                </div>
+
+                <div>
+                    <strong>BEYOND TOP 10:</strong><br>
+                    When Recurve reaches the top 10, the community votes on what comes next. A Recurve stablecoin. A Recurve DEX. A Recurve payment network. The coin becomes infrastructure. Retail wealth becomes permanent. This is the long game. This is why we build now, in the early blocks, when the reward is highest and the believers are fewest. The Awakening belongs to those who showed up first.
+                </div>
+
+                <div class="rage-connection-box">
+                    <h4>THE RAGE METER CONNECTION:</h4>
+                    <p>
+                        The Recurve Rage Meter is not just a tool. It is proof.<br><br>
+                        Every day it measures the real pain of retail investors in live numbers. Market manipulation score. Coins bleeding. Crash velocity. It is the evidence we show the world. It is the reason we build. It updates every 60 seconds because the manipulation never stops. Neither do we.
+                    </p>
+                </div>
+            </div>
+
+            <!-- DONATE SECTION -->
+            <div class="donate-container">
+                <div class="donate-card">
+                    <h3 class="donate-title">SUPPORT THE REVOLUTION</h3>
+                    <p class="donate-subtitle">
+                        100% of donations fund Recurve development: premium APIs, infrastructure, and tools.<br>
+                        No founders salary. No corporate overhead.
+                    </p> 
+                    
+                    <div class="donate-tabs">
+                        <!-- <button class="donate-tab active" data-coin="rcv" onclick="switchTab('rcv')">RCV</button> -->
+                        <button class="donate-tab" data-coin="btc" onclick="switchTab('btc')">BTC</button>
+                        <button class="donate-tab" data-coin="eth" onclick="switchTab('eth')">ETH</button>
+                        <button class="donate-tab" data-coin="sol" onclick="switchTab('sol')">SOL</button>
+                        <button class="donate-tab" data-coin="tron" onclick="switchTab('tron')">TRON</button>
+                    </div>
+
+                    <!-- RCV Tab Content -->
+                    <div id="tab-rcv" class="donate-tab-content">
+                        <div class="address-box-wrapper">
+                            <div class="address-text">RHmUeNxsB1o4jJzRBQXoLHDBEE6jMsHDtP</div>
+                            <button class="copy-btn" onclick="copyAddress('RHmUeNxsB1o4jJzRBQXoLHDBEE6jMsHDtP', this)">
+                                <svg class="clip-icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                <span>COPY</span>
+                            </button>
+                        </div>
+                        <div class="address-label">Native Recurve Chain</div>
+                    </div>
+
+                    <!-- BTC Tab Content -->
+                    <div id="tab-btc" class="donate-tab-content" style="display: none;">
+                        <div class="address-box-wrapper">
+                            <div class="address-text">bc1q2g6a5zcedqcln3hy7zsq9f5a4zyrhrtu09ws4c</div>
+                            <button class="copy-btn" onclick="copyAddress('bc1q2g6a5zcedqcln3hy7zsq9f5a4zyrhrtu09ws4c', this)">
+                                <svg class="clip-icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                <span>COPY</span>
+                            </button>
+                        </div>
+                        <div class="address-label">Bitcoin (Native SegWit)</div>
+                    </div>
+
+                    <!-- ETH Tab Content -->
+                    <div id="tab-eth" class="donate-tab-content" style="display: none;">
+                        <div class="address-box-wrapper">
+                            <div class="address-text">0x97324DFbDE53F9eB89cf541922087bCc599DF0f7</div>
+                            <button class="copy-btn" onclick="copyAddress('0x97324DFbDE53F9eB89cf541922087bCc599DF0f7', this)">
+                                <svg class="clip-icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                <span>COPY</span>
+                            </button>
+                        </div>
+                        <div class="address-label">Ethereum (also accepts USDT-ERC20)</div>
+                    </div>
+
+                    <!-- SOL Tab Content -->
+                    <div id="tab-sol" class="donate-tab-content" style="display: none;">
+                        <div class="address-box-wrapper">
+                            <div class="address-text">9jHRcFVA7GwFfbJefV3njsySfCHgLYe2zwr1DGt3GgMT</div>
+                            <button class="copy-btn" onclick="copyAddress('9jHRcFVA7GwFfbJefV3njsySfCHgLYe2zwr1DGt3GgMT', this)">
+                                <svg class="clip-icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                <span>COPY</span>
+                            </button>
+                        </div>
+                        <div class="address-label">Solana (also accepts USDT-SPL)</div>
+                    </div>
+
+                    <!-- TRON Tab Content -->
+                    <div id="tab-tron" class="donate-tab-content" style="display: none;">
+                        <div class="address-box-wrapper">
+                            <div class="address-text">TLk2b7WPiiQ943BoHRxgkJehnFpVwErhP8</div>
+                            <button class="copy-btn" onclick="copyAddress('TLk2b7WPiiQ943BoHRxgkJehnFpVwErhP8', this)">
+                                <svg class="clip-icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                <span>COPY</span>
+                            </button>
+                        </div>
+                        <div class="address-label">Tron (also accepts USDT-TRC20)</div>
+                    </div>
+
+                    <p class="donate-desc">
+                        This wallet belongs to no individual. It is controlled by The Recurve Collective. All spending announced publicly on GitHub.
+                    </p>
+                    
+                    <div class="accepted-assets">Accepting:  <!--RCV --> BTC | ETH | USDT | SOL | TRON</div>
+                    
+                    <p class="donate-note-bottom">
+                        Every satoshi goes to the mission. The curve always bends back.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2 — LIVE RAGE METER EMBED -->
+    <section id="rage-embed" class="fade-in-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">RETAIL RAGE — RIGHT NOW</h2>
+            </div>
+            
+            <div class="metrics-grid">
+                <!-- Card 1 -->
+                <div class="metric-card" id="rage-box">
+                    <div class="metric-value" id="rage-score-num">--</div>
+                    <div class="metric-label">RAGE INDEX</div>
+                </div>
+                <!-- Card 2 -->
+                <div class="metric-card">
+                    <div class="metric-value" id="bleeding-count">--</div>
+                    <div class="metric-label">COINS BLEEDING</div>
+                </div>
+                <!-- Card 3 -->
+                <div class="metric-card">
+                    <div class="metric-value" id="market-shift">--</div>
+                    <div class="metric-label">MARKET SHIFT</div>
+                </div>
+                <!-- Card 4 -->
+                <div class="metric-card">
+                    <div class="metric-value" id="btc-dominance">--</div>
+                    <div class="metric-label">BTC DOMINANCE</div>
+                </div>
+            </div>
+
+            <div class="metric-footer">
+                <a href="rage-meter.html" class="btn btn-outline">SEE FULL RAGE METER →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3 — WHY RECURVE -->
+    <section id="why-recurve" class="fade-in-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">WHY RECURVE EXISTS</h2>
+            </div>
+
+            <div class="columns-grid">
+                <!-- Column 1 -->
+                <div class="col-card">
+                    <div class="icon-container">
+                        <div class="bow-shape"></div>
+                    </div>
+                    <h3 class="col-card-title">Built Against Manipulation</h3>
+                    <p class="col-card-text">
+                        Every market cycle retail investors lose while whales, institutions and insiders profit. Recurve was built in the wreckage of that system.
+                    </p>
+                </div>
+
+                <!-- Column 2 -->
+                <div class="col-card">
+                    <div class="icon-container">
+                        <div class="shield-shape"></div>
+                    </div>
+                    <h3 class="col-card-title">Mathematical Fairness</h3>
+                    <p class="col-card-text">
+                        No premine. No VC allocation. No insider distribution. Every RCV is earned through BendProof mining. The code is the law.
+                    </p>
+                </div>
+
+                <!-- Column 3 -->
+                <div class="col-card">
+                    <div class="icon-container">
+                        <div class="chain-shape">
+                            <div class="chain-link chain-link-1"></div>
+                            <div class="chain-link chain-link-2"></div>
+                        </div>
+                    </div>
+                    <h3 class="col-card-title">Anonymous Forever</h3>
+                    <p class="col-card-text">
+                        Like Bitcoin, Recurve has no CEO, no company, no address. The founders are anonymous. The network cannot be targeted or shut down.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4 — BENDPROOF MINING PHASES -->
+    <section id="phases" class="fade-in-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">BENDPROOF MINING — 4 PHASES</h2>
+                <p class="section-subtitle">10,000,000,000 RCV. Fixed forever. Earned only through mining.</p>
+            </div>
+
+            <div class="timeline">
+                <!-- Phase 1 -->
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <span class="phase-number">PHASE 1</span>
+                        <span class="phase-badge badge-active">ACTIVE — Mine Now</span>
+                    </div>
+                    <h3 class="phase-title">THE AWAKENING</h3>
+                    <ul class="phase-spec-list">
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Strikes</span>
+                            <span class="phase-spec-val">0 to 400,000</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Reward</span>
+                            <span class="phase-spec-val">10,000 RCV</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Supply</span>
+                            <span class="phase-spec-val">4 Billion RCV</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Hardware</span>
+                            <span class="phase-spec-val">Any CPU</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <span class="phase-number">PHASE 2</span>
+                        <span class="phase-badge badge-upcoming">UPCOMING</span>
+                    </div>
+                    <h3 class="phase-title">THE RESISTANCE</h3>
+                    <ul class="phase-spec-list">
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Strikes</span>
+                            <span class="phase-spec-val">400K to 1M</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Reward</span>
+                            <span class="phase-spec-val">5,000 RCV</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Supply</span>
+                            <span class="phase-spec-val">3 Billion RCV</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Hardware</span>
+                            <span class="phase-spec-val">GPU Rec.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <span class="phase-number">PHASE 3</span>
+                        <span class="phase-badge badge-future">FUTURE</span>
+                    </div>
+                    <h3 class="phase-title">THE RECKONING</h3>
+                    <ul class="phase-spec-list">
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Strikes</span>
+                            <span class="phase-spec-val">1M to 3,000,000</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Reward</span>
+                            <span class="phase-spec-val">1,000 RCV</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Supply</span>
+                            <span class="phase-spec-val">2 Billion RCV</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Hardware</span>
+                            <span class="phase-spec-val">Dedicated Rigs</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 4 -->
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <span class="phase-number">PHASE 4</span>
+                        <span class="phase-badge badge-mythological">MYTHOLOGICAL</span>
+                    </div>
+                    <h3 class="phase-title">THE VAULT</h3>
+                    <ul class="phase-spec-list">
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Strikes</span>
+                            <span class="phase-spec-val">3M to 13,000,000</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Reward</span>
+                            <span class="phase-spec-val">100 RCV</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Supply</span>
+                            <span class="phase-spec-val">1 Billion RCV</span>
+                        </li>
+                        <li class="phase-spec-item">
+                            <span class="phase-spec-label">Hardware</span>
+                            <span class="phase-spec-val">Beyond Tech</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="phases-footer">
+                After Strike 13,000,000 — No more RCV ever. The supply is sealed. The vault is closed.
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5 — TECHNICAL SPECS -->
+    <section id="specs" class="fade-in-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">CHAIN SPECIFICATIONS</h2>
+            </div>
+
+            <div class="specs-grid">
+                <div class="specs-column">
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Blockchain</span>
+                        <span class="spec-value">Recurve Chain (L1)</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Ticker</span>
+                        <span class="spec-value">RCV</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Algorithm</span>
+                        <span class="spec-value">BendProof (Scrypt)</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Total Supply</span>
+                        <span class="spec-value">10,000,000,000 RCV</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Block Time</span>
+                        <span class="spec-value">60 Seconds</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Address Prefix</span>
+                        <span class="spec-value">R</span>
+                    </div>
+                </div>
+
+                <div class="specs-column">
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">P2P Port</span>
+                        <span class="spec-value">9444</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Network Magic</span>
+                        <span class="spec-value">RCV1</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Genesis Block</span>
+                        <span class="spec-value">0d65b0a680be1b66858e3e4a28db9444d37db2e95fa5c739b83b320d7d962006</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Genesis Date</span>
+                        <span class="spec-value">June 2026</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">Founders</span>
+                        <span class="spec-value">Anonymous</span>
+                    </div>
+                    <div class="spec-box spec-item-anim">
+                        <span class="spec-label">License</span>
+                        <span class="spec-value">Open Source (MIT)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6 — GET INVOLVED -->
+    <section id="get-involved" class="fade-in-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">JOIN THE RECURVE</h2>
+                <p class="section-subtitle">The movement grows one Bender at a time.</p>
+            </div>
+
+            <div class="involved-grid">
+                <!-- Card 1 -->
+                <div class="involved-card">
+                    <div class="icon-container">
+                        <div class="cpu-shape"></div>
+                    </div>
+                    <h3 class="involved-title">MINE RCV</h3>
+                    <p class="involved-text">
+                        Start mining RCV in Phase 1. Any CPU can mine. 10,000 RCV per Strike.
+                    </p>
+                    <a href="#mining-guide" class="btn btn-outline">MINING GUIDE</a>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="involved-card">
+                    <div class="icon-container">
+                        <div class="doc-shape"></div>
+                    </div>
+                    <h3 class="involved-title">READ THE WHITEPAPER</h3>
+                    <p class="involved-text">
+                        Understand the technology, the tokenomics, and the mission behind Recurve.
+                    </p>
+                    <a href="whitepaper.html" class="btn btn-outline">READ NOW</a>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="involved-card">
+                    <div class="icon-container">
+                        <div class="code-shape">&lt; /&gt;</div>
+                    </div>
+                    <h3 class="involved-title">VERIFY THE CODE</h3>
+                    <p class="involved-text">
+                        Recurve is fully open source. Audit the blockchain yourself. Trust the math, not the founders.
+                    </p>
+                    <a href="https://github.com/RecurveRCV/recurve-core" target="_blank" rel="noopener" class="btn btn-outline">GITHUB</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7 — MINING GUIDE -->
+    <section id="mining-guide" class="fade-in-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">START MINING RCV</h2>
+                <p class="section-subtitle">Phase 1 — The Awakening is active. Your laptop can mine right now.</p>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="guide-step">
+                <h3 class="guide-step-title">
+                    <span class="guide-step-num">1</span>
+                    Install Dependencies
+                </h3>
+                <div class="terminal-box">
+                    <div class="terminal-line"><span class="terminal-comment"># Ubuntu/Debian</span></div>
+                    <div class="terminal-line">sudo apt install build-essential libssl-dev</div>
+                    <div class="terminal-line">sudo apt install libboost-all-dev libevent-dev<span class="terminal-cursor"></span></div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="guide-step">
+                <h3 class="guide-step-title">
+                    <span class="guide-step-num">2</span>
+                    Clone and Build
+                </h3>
+                <div class="terminal-box">
+                    <div class="terminal-line">git clone https://github.com/RecurveRCV/recurve-core</div>
+                    <div class="terminal-line">cd recurve-core</div>
+                    <div class="terminal-line">./autogen.sh</div>
+                    <div class="terminal-line">./configure</div>
+                    <div class="terminal-line">make -j$(nproc)<span class="terminal-cursor"></span></div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="guide-step">
+                <h3 class="guide-step-title">
+                    <span class="guide-step-num">3</span>
+                    Start Mining
+                </h3>
+                <div class="terminal-box">
+                    <div class="terminal-line">./src/recurved -daemon</div>
+                    <div class="terminal-line">./src/recurve-cli getmininginfo</div>
+                    <div class="terminal-line">./src/recurve-cli generatetoaddress 1 YOUR_RCV_ADDRESS<span class="terminal-cursor"></span></div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="guide-step">
+                <h3 class="guide-step-title">
+                    <span class="guide-step-num">4</span>
+                    Check Balance
+                </h3>
+                <div class="terminal-box">
+                    <div class="terminal-line">./src/recurve-cli getbalance<span class="terminal-cursor"></span></div>
+                </div>
+            </div>
+
+            <div class="guide-note">
+                Mining difficulty is very low in Phase 1. This is intentional — early believers are rewarded. The Awakening belongs to retail.
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8 — FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-left">
+                    <h4>}{ RCV }{</h4>
+                    <p>"The Curve Always Bends Back"</p>
+                    <p style="margin-top: 8px; font-size: 0.85rem; color: #555555;">Recurve (RCV) — Genesis Block: June 2026</p>
+                </div>
+                
+                <div class="footer-center">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="whitepaper.html">Whitepaper</a></li>
+                        <li><a href="rage-meter.html">Rage Meter</a></li>
+                        <li><a href="https://github.com/RecurveRCV/recurve-core" target="_blank" rel="noopener">GitHub</a></li>
+                        <li><a href="#mining-guide">Mining Guide</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-right">
+                    <h5>Our Manifesto</h5>
+                    <p>"Anonymous. Decentralized. Unstoppable."</p>
+                    <p>"No company. No CEO. No address."</p>
+                    <p style="font-size: 0.85rem; color: #555555; margin-top: 12px;">Built by The Recurve Collective.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                Open Source — MIT License — The code is the law.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+            if (themeToggle) themeToggle.innerText = '☀️';
+        } else {
+            if (themeToggle) themeToggle.innerText = '🌙';
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                if (document.body.classList.contains('light-mode')) {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerText = '☀️';
+                } else {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerText = '🌙';
+                }
+            });
+        }
+
+        // Mobile menu toggle
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const navMenu = document.getElementById('nav-menu');
+
+        hamburgerBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            hamburgerBtn.classList.toggle('open');
+            // Animate hamburger lines
+            const spans = hamburgerBtn.querySelectorAll('span');
+            if (hamburgerBtn.classList.contains('open')) {
+                spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+            } else {
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            }
+        });
+
+        // Close mobile menu when a link is clicked
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                hamburgerBtn.classList.remove('open');
+                const spans = hamburgerBtn.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            });
+        });
+
+        // Sticky Navbar on Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Live API Fetching with Fallbacks
+        const fallbacks = {
+            rage: 68,
+            bleeding: 74,
+            shift: -3.85,
+            dominance: 54.20
+        };
+
+        // Render Rage metric and style dynamically
+        function updateRage(score) {
+            const el = document.getElementById('rage-score-num');
+            if (!el) return;
+            el.textContent = score;
+
+            let color = '#FFD700'; // yellow
+            if (score >= 61) {
+                color = '#FF0000'; // red
+            } else if (score <= 30) {
+                color = '#00FF88'; // green
+            }
+
+            el.style.color = color;
+            document.getElementById('rage-box').style.borderColor = color + '66';
+        }
+
+        function updateBleeding(count) {
+            const el = document.getElementById('bleeding-count');
+            if (el) el.textContent = count + '/100';
+        }
+
+        function updateGlobal(shift, dominance) {
+            const shiftEl = document.getElementById('market-shift');
+            const domEl = document.getElementById('btc-dominance');
+
+            if (shiftEl) {
+                const prefix = shift >= 0 ? '+' : '';
+                shiftEl.textContent = prefix + shift.toFixed(2) + '%';
+                if (shift < 0) {
+                    shiftEl.style.color = '#FF4500'; // Ember color for down shift
+                } else {
+                    shiftEl.style.color = '#00FF88';
+                }
+            }
+
+            if (domEl) {
+                domEl.textContent = dominance.toFixed(1) + '%';
+            }
+        }
+
+        // Run fetches
+        // 1. Fear and Greed Index
+        fetch('https://api.alternative.me/fng/')
+            .then(res => res.json())
+            .then(data => {
+                const val = parseInt(data.data[0].value);
+                const rage = 100 - val;
+                updateRage(rage);
+            })
+            .catch(() => updateRage(fallbacks.rage));
+
+        // 2. CoinGecko Markets
+        fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1')
+            .then(res => res.json())
+            .then(data => {
+                const bleeding = data.filter(c => c.price_change_percentage_24h < 0).length;
+                updateBleeding(bleeding);
+            })
+            .catch(() => updateBleeding(fallbacks.bleeding));
+
+        // 3. CoinGecko Global info
+        fetch('https://api.coingecko.com/api/v3/global')
+            .then(res => res.json())
+            .then(data => {
+                const shift = data.data.market_cap_change_percentage_24h_usd;
+                const dom = data.data.market_cap_percentage.btc;
+                updateGlobal(shift, dom);
+            })
+            .catch(() => updateGlobal(fallbacks.shift, fallbacks.dominance));
+
+        // Intersection Observer for Scroll Animations
+        if ('IntersectionObserver' in window) {
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.15
+            });
+
+            document.querySelectorAll('.fade-in-section').forEach(section => {
+                sectionObserver.observe(section);
+            });
+
+            const specObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, idx) => {
+                    if (entry.isIntersecting) {
+                        // Cascading effect
+                        setTimeout(() => {
+                            entry.target.classList.add('is-visible');
+                        }, idx * 60);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.spec-item-anim').forEach(item => {
+                specObserver.observe(item);
+            });
+        } else {
+            // Fallback for browsers without IntersectionObserver
+            document.querySelectorAll('.fade-in-section, .spec-item-anim').forEach(el => {
+                el.classList.add('is-visible');
+            });
+        }
+
+        function switchTab(coinId) {
+            document.querySelectorAll('.donate-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeTab = document.querySelector(`.donate-tab[data-coin="${coinId}"]`);
+            if (activeTab) activeTab.classList.add('active');
+
+            document.querySelectorAll('.donate-tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            const activeContent = document.getElementById(`tab-${coinId}`);
+            if (activeContent) activeContent.style.display = 'block';
+        }
+
+        function copyAddress(address, btn) {
+            navigator.clipboard.writeText(address).then(() => {
+                const btnText = btn.querySelector('span');
+                const originalHTML = btnText.innerHTML;
+                btnText.innerHTML = 'Copied!';
+                btn.style.borderColor = '#00FF88';
+                btn.style.color = '#00FF88';
+                btn.style.boxShadow = '0 0 10px rgba(0, 255, 136, 0.6)';
+                setTimeout(() => {
+                    btnText.innerHTML = originalHTML;
+                    btn.style.borderColor = '#FF0000';
+                    btn.style.color = '#FF0000';
+                    btn.style.boxShadow = 'none';
+                }, 2000);
+            }).catch(err => {
+                console.error('Copy failed', err);
+            });
+        }
+    </script>
+</body>
+</html>

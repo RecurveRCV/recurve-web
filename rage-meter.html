@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recurve Rage Meter</title>
+    
+    <!-- Google Fonts - Rajdhani -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0A0A0A;
+            --text-color: #FFFFFF;
+            --dim-text: #888888;
+            --card-bg: #121212;
+            --card-border: 1px solid #FF0000;
+            --grid-color: rgba(255, 0, 0, 0.04);
+            --row-alt: rgba(255, 255, 255, 0.015);
+            --ticker-bg: #0F0F0F;
+            
+            --primary-red: #FF0000;
+            --ember-orange: #FF4500;
+            --green: #00FF88;
+            --yellow: #FFD700;
+            --red: #FF0000;
+            --glow-color: var(--yellow);
+        }
+
+        body.light-mode {
+            --bg-color: #F5F5F5;
+            --text-color: #1A1A1A;
+            --dim-text: #555555;
+            --card-bg: #FFFFFF;
+            --grid-color: rgba(255, 0, 0, 0.09);
+            --row-alt: rgba(0, 0, 0, 0.025);
+            --ticker-bg: #F0F0F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            padding-top: 40px; /* Clears fixed theme toggle button spacing */
+        }
+
+        /* Subtle radar grid animation scrolling diagonally */
+        body::after {
+            content: '';
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            width: calc(100% + 200px);
+            height: calc(100% + 200px);
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -10;
+            pointer-events: none;
+            animation: radarGridScroll 100s linear infinite;
+        }
+
+        @keyframes radarGridScroll {
+            from {
+                transform: translate(0, 0);
+            }
+            to {
+                transform: translate(30px, 30px);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px; /* Centered 1400px container */
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* FIX 1: Theme Toggle is fixed top-right with high z-index */
+        .theme-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: var(--card-border);
+            color: var(--text-color);
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+
+        .theme-btn:hover {
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Ticker layout fixes */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background: var(--ticker-bg);
+            border-bottom: 1px solid rgba(255, 0, 0, 0.2); /* 1px bottom border #FF000033 */
+            padding: 10px 0;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding-top: 15px; /* Clear overlap space */
+        }
+
+        .ticker {
+            display: flex;
+            white-space: nowrap;
+            animation: tickerAnimation 35s linear infinite;
+            width: max-content;
+        }
+
+        .ticker:hover {
+            animation-play-state: paused;
+        }
+
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            gap: 8px;
+        }
+
+        @keyframes tickerAnimation {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 1. HEADER */
+        header {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--ember-orange);
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.3);
+            margin-bottom: 5px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--dim-text);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .update-time {
+            font-size: 0.85rem;
+            color: var(--dim-text);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid var(--grid-color);
+        }
+
+        .update-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--red);
+            box-shadow: 0 0 8px var(--red);
+            animation: heartbeat 2s infinite ease-in-out;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.3; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 2. MAIN RAGE GAUGE SECTION */
+        .gauge-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+            width: 100%;
+        }
+
+        .gauge-container {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gauge-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255, 0, 0, 0.05);
+            stroke-width: 12;
+            stroke-linecap: round;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke: var(--glow-color);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 330;
+            stroke-dashoffset: 330;
+            transition: stroke-dashoffset 1.5s ease-in-out, stroke 1s ease;
+            filter: drop-shadow(0 0 10px var(--glow-color));
+        }
+
+        .gauge-center {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .gauge-score {
+            font-size: 6rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-color); /* Matches light/dark mode */
+            font-feature-settings: "tnum";
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .gauge-percent {
+            font-size: 2rem;
+            margin-top: 15px;
+            color: var(--dim-text);
+        }
+
+        /* FIX 1: Label positioned strictly below gauge circle */
+        .gauge-label {
+            margin-top: 20px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--glow-color);
+            transition: color 1s ease;
+            text-align: center;
+        }
+
+        /* FIX 4: History Chart scales correctly */
+        .history-container {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .history-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dim-text);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .history-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 6px; /* 6px gap */
+            height: 80px; /* fixed height 80px */
+            width: 100%;
+            border-bottom: 1px solid var(--grid-color);
+            padding-bottom: 5px;
+        }
+
+        .history-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .history-bar {
+            width: 32px; /* 32px wide */
+            transition: height 0.5s ease-out, background 0.5s ease;
+            position: relative;
+        }
+
+        .history-bar-label {
+            font-size: 10px; /* 10px font score label */
+            font-weight: 700;
+            color: var(--dim-text);
+        }
+
+        /* 3. SIGNALS BREAKDOWN */
+        .signals-section {
+            padding: 60px 0;
+            width: 100%;
+        }
+
+        .signals-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px; /* 16px gaps */
+            width: 100%;
+        }
+
+        /* FIX 3 & 5: Hard edged tactical cards, text color visible in light mode */
+        .signal-card, .metric-card, .table-section, .recurve-bar-container {
+            background: var(--card-bg);
+            border: var(--card-border);
+            border-radius: 0px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .signal-card:hover, .metric-card:hover {
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .signal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .signal-title {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--dim-text);
+            text-transform: uppercase;
+        }
+
+        .signal-weight {
+            font-size: 0.8rem;
+            border: 1px solid var(--grid-color);
+            padding: 2px 6px;
+            color: var(--dim-text);
+            font-weight: 600;
+        }
+
+        .signal-value-container {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .signal-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-color); /* Matches light/dark mode */
+        }
+
+        .signal-max {
+            font-size: 1.1rem;
+            color: var(--dim-text);
+        }
+
+        .signal-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .signal-bar-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 1s ease-in-out, background 1s ease;
+        }
+
+        /* 3B. MANIPULATION WATCH SECTION */
+        .info-section {
+            padding: 60px 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* FIX 5 & 6: Titles always red */
+        .section-title, .table-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-left: 4px solid var(--primary-red);
+            padding-left: 12px;
+            color: #FF0000 !important;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            width: 100%;
+        }
+
+        .metric-val {
+            font-size: 2.8rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .metric-lbl {
+            font-size: 0.9rem;
+            color: var(--dim-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 4. RETAIL PAIN TABLE */
+        .table-section {
+            padding: 60px 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--red);
+            box-shadow: 0 0 8px var(--red);
+            animation: pulse 1s infinite;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 1.1rem;
+            color: var(--text-color); /* Visible in light mode */
+        }
+
+        th {
+            padding: 14px 16px;
+            color: var(--dim-text);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--grid-color);
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--grid-color);
+            font-weight: 500;
+            transition: background-color 0.5s ease;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--row-alt);
+        }
+
+        tr.worst-row {
+            background-color: rgba(255, 0, 0, 0.15) !important;
+            border: 2px solid var(--primary-red);
+        }
+
+        .coin-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .coin-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .coin-symbol {
+            color: var(--dim-text);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .change-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .change-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* FIX 6: Negative/Positive price changes colored consistently */
+        .change-badge.negative {
+            background: rgba(255, 69, 0, 0.1);
+            color: #FF4500;
+        }
+
+        .change-badge.positive {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00FF88;
+        }
+
+        .sparkline-bar-bg {
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .sparkline-bar-fill {
+            height: 100%;
+            background: var(--red);
+        }
+
+        /* Flash animations */
+        @keyframes flashGreen {
+            0% { background-color: rgba(0, 255, 136, 0.4); }
+            100% { background-color: transparent; }
+        }
+
+        @keyframes flashRed {
+            0% { background-color: rgba(255, 69, 0, 0.4); }
+            100% { background-color: transparent; }
+        }
+
+        .flash-up {
+            animation: flashGreen 0.5s ease-out;
+        }
+
+        .flash-down {
+            animation: flashRed 0.5s ease-out;
+        }
+
+        /* 5. RECURVE NETWORK BAR */
+        .recurve-bar-container {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 24px;
+            font-size: 1.1rem;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: var(--text-color);
+            text-transform: uppercase;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .recurve-bar-item {
+            padding: 0 10px;
+        }
+
+        .recurve-bar-divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 0, 0, 0.4);
+        }
+
+        /* 6. FOOTER */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--dim-text);
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            width: 100%;
+            border-top: 1px solid var(--grid-color);
+            margin-top: auto;
+        }
+
+        .error-badge {
+            background: rgba(255, 0, 0, 0.15);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #FF3B30;
+            padding: 10px 20px;
+            border-radius: 0px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: skeletonPulse 1.5s infinite;
+        }
+
+        @keyframes skeletonPulse {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* RESPONSIVE LAYOUT FIXES */
+        @media (max-width: 768px) {
+            .theme-btn {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-top: 10px;
+            }
+            .signals-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .gauge-container {
+                width: 280px;
+                height: 280px;
+            }
+            .gauge-score {
+                font-size: 4.5rem;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .recurve-bar-divider {
+                display: none;
+            }
+            .recurve-bar-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="theme-btn" id="theme-toggle">🌙</button>
+
+    <div class="container">
+        
+        <!-- 1. HEADER -->
+        <header>
+            <div class="logo">){ RCV }(</div>
+            <div style="margin-top: 10px; display: flex; gap: 20px; font-family: 'Rajdhani', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                <a href="index.html" style="color: var(--text-color); text-decoration: none; transition: color 0.3s ease;">Home</a>
+                <span style="color: var(--dim-text);">|</span>
+                <a href="whitepaper.html" style="color: var(--text-color); text-decoration: none; transition: color 0.3s ease;">Whitepaper</a>
+            </div>
+            <h1 id="app-title">RECURVE RAGE METER</h1>
+            <div class="subtitle">The Curve Always Bends Back</div>
+            <div class="update-time" id="update-time-box">
+                <span class="update-indicator"></span>
+                <span id="update-time-text">INITIALIZING SENSORS...</span>
+                <span id="countdown-text" style="color: var(--dim-text); margin-left: 10px;"></span>
+            </div>
+            <div class="error-badge" id="error-box">
+                <span>⚠️</span>
+                <span>DATA UNAVAILABLE</span>
+            </div>
+        </header>
+
+        <!-- FIX 1: LIVE PRICE TICKER (Moved below header section entirely) -->
+        <div class="ticker-wrap">
+            <div class="ticker" id="live-ticker">
+                <div class="ticker-item">LOADING TICKER DATA...</div>
+            </div>
+        </div>
+
+        <!-- 2. MAIN RAGE GAUGE -->
+        <section class="gauge-section">
+            <div class="gauge-container" id="gauge-container">
+                <svg class="gauge-svg" viewBox="0 0 200 200">
+                    <path class="gauge-bg" d="M 50.5 149.5 A 70 70 0 1 1 149.5 149.5" />
+                    <path class="gauge-fill" id="gauge-fill-arc" d="M 50.5 149.5 A 70 70 0 1 1 149.5 149.5" />
+                </svg>
+                
+                <div class="gauge-center">
+                    <div class="gauge-score" id="score-display">--<span class="gauge-percent"></span></div>
+                </div>
+            </div>
+            <div class="gauge-label" id="label-display">CALCULATING DATA</div>
+
+            <!-- RAGE HISTORY BARS -->
+            <div class="history-container">
+                <div class="history-title">RAGE HISTORY — LAST 10 READINGS</div>
+                <div class="history-bars" id="history-bars">
+                    <!-- 10 bars -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SIGNALS GRID -->
+        <section class="signals-section">
+            <div class="signals-grid" id="signals-container">
+                <!-- Card 1 -->
+                <div class="signal-card" id="card-market-pain">
+                    <div class="signal-header">
+                        <span class="signal-title">Market Pain</span>
+                        <span class="signal-weight">40%</span>
+                    </div>
+                    <div class="signal-value-container">
+                        <span class="signal-value" id="val-market-pain">0</span>
+                        <span class="signal-max">/100</span>
+                    </div>
+                    <div class="signal-bar-bg">
+                        <div class="signal-bar-fill" id="bar-market-pain"></div>
+                    </div>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="signal-card" id="card-fear-greed">
+                    <div class="signal-header">
+                        <span class="signal-title">Fear Inverted</span>
+                        <span class="signal-weight">20%</span>
+                    </div>
+                    <div class="signal-value-container">
+                        <span class="signal-value" id="val-fear-greed">0</span>
+                        <span class="signal-max">/100</span>
+                    </div>
+                    <div class="signal-bar-bg">
+                        <div class="signal-bar-fill" id="bar-fear-greed"></div>
+                    </div>
+                </div>
+                
+                <!-- Card 3 -->
+                <div class="signal-card" id="card-btc-pressure">
+                    <div class="signal-header">
+                        <span class="signal-title">BTC Pressure</span>
+                        <span class="signal-weight">20%</span>
+                    </div>
+                    <div class="signal-value-container">
+                        <span class="signal-value" id="val-btc-pressure">0</span>
+                        <span class="signal-max">/100</span>
+                    </div>
+                    <div class="signal-bar-bg">
+                        <div class="signal-bar-fill" id="bar-btc-pressure"></div>
+                    </div>
+                </div>
+                
+                <!-- Card 4 -->
+                <div class="signal-card" id="card-crash-velocity">
+                    <div class="signal-header">
+                        <span class="signal-title">Crash Velocity</span>
+                        <span class="signal-weight">20%</span>
+                    </div>
+                    <div class="signal-value-container">
+                        <span class="signal-value" id="val-crash-velocity">0</span>
+                        <span class="signal-max">/100</span>
+                    </div>
+                    <div class="signal-bar-bg">
+                        <div class="signal-bar-fill" id="bar-crash-velocity"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION A: MANIPULATION WATCH -->
+        <section class="info-section">
+            <h2 class="section-title">Manipulation Watch</h2>
+            <div class="metrics-grid">
+                <div class="metric-card" id="metric-coins-red">
+                    <span class="metric-val">0</span>
+                    <span class="metric-lbl">Coins in Red Today</span>
+                </div>
+                <div class="metric-card" id="metric-avg-loss">
+                    <span class="metric-val">0.0%</span>
+                    <span class="metric-lbl">Avg Loss Today</span>
+                </div>
+                <div class="metric-card" id="metric-mcap-change">
+                    <span class="metric-val">0.0%</span>
+                    <span class="metric-lbl">Market Cap Change</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION B: RETAIL PAIN TABLE -->
+        <section class="table-section">
+            <div class="table-header">
+                <h2 class="table-title">Retail Bleeding — Live</h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">Rank</th>
+                            <th>Name</th>
+                            <th style="text-align: right;">Price</th>
+                            <th style="text-align: right; width: 170px;">24h Change</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coin-table-body">
+                        <!-- Skeletons -->
+                        <tr><td colspan="4"><div class="skeleton" style="height: 40px; width: 100%;"></div></td></tr>
+                        <tr><td colspan="4"><div class="skeleton" style="height: 40px; width: 100%;"></div></td></tr>
+                        <tr><td colspan="4"><div class="skeleton" style="height: 40px; width: 100%;"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION C: RECURVE NETWORK -->
+        <section class="recurve-bar-container">
+            <div class="recurve-bar-item">Phase 1: The Awakening</div>
+            <div class="recurve-bar-divider"></div>
+            <div class="recurve-bar-item">Supply: 10B RCV</div>
+            <div class="recurve-bar-divider"></div>
+            <div class="recurve-bar-item">Strikes Mined: 0</div>
+            <div class="recurve-bar-divider"></div>
+            <div class="recurve-bar-item">Status: Genesis Block</div>
+            <div class="recurve-bar-divider"></div>
+            <div class="recurve-bar-item">Built by The People Who Lost</div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            Recurve (RCV) — Anonymous. Decentralized. Unstoppable.
+        </footer>
+
+    </div>
+
+    <script>
+        const API_GEKO_MARKETS = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1';
+        const API_FEAR_GREED = 'https://api.alternative.me/fng/';
+        const API_GEKO_GLOBAL = 'https://api.coingecko.com/api/v3/global';
+
+        // State Tracking
+        let prevRageScore = 0;
+        const prevSignals = { s1: 0, s2: 0, s3: 0, s4: 0 };
+        const prevWatch = { red: 0, avg: 0, mcap: 0 };
+        const previousPrices = {};
+        const rageHistory = [];
+        let secondsLeft = 60;
+        let countdownInterval = null;
+
+        // Set up DOM targets
+        const scoreDisplay = document.getElementById('score-display');
+        const labelDisplay = document.getElementById('label-display');
+        const gaugeFillArc = document.getElementById('gauge-fill-arc');
+        const updateTimeText = document.getElementById('update-time-text');
+        const errorBox = document.getElementById('error-box');
+        const coinTableBody = document.getElementById('coin-table-body');
+        const liveTicker = document.getElementById('live-ticker');
+        const countdownText = document.getElementById('countdown-text');
+        const themeToggle = document.getElementById('theme-toggle');
+
+        // References for signals and values
+        const valMarketPain = document.getElementById('val-market-pain');
+        const valFearGreed = document.getElementById('val-fear-greed');
+        const valBtcPressure = document.getElementById('val-btc-pressure');
+        const valCrashVelocity = document.getElementById('val-crash-velocity');
+
+        const barMarketPain = document.getElementById('bar-market-pain');
+        const barFearGreed = document.getElementById('bar-fear-greed');
+        const barBtcPressure = document.getElementById('bar-btc-pressure');
+        const barCrashVelocity = document.getElementById('bar-crash-velocity');
+
+        const cards = {
+            pain: document.getElementById('card-market-pain'),
+            fng: document.getElementById('card-fear-greed'),
+            btc: document.getElementById('card-btc-pressure'),
+            crash: document.getElementById('card-crash-velocity')
+        };
+
+        // Theme Toggle
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggle.innerText = '☀️';
+        } else {
+            themeToggle.innerText = '🌙';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerText = '☀️';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerText = '🌙';
+            }
+        });
+
+        // Numerical Counting Animation
+        function animateValue(element, start, end, duration, suffix = '') {
+            let startTime = null;
+            function animation(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentVal = start + progress * (end - start);
+                element.innerText = currentVal.toFixed(suffix ? 1 : 0) + suffix;
+                if (progress < 1) {
+                    requestAnimationFrame(animation);
+                }
+            }
+            requestAnimationFrame(animation);
+        }
+
+        // Decimal Counting Animation
+        function animateDecimal(element, start, end, duration, suffix = '') {
+            let startTime = null;
+            function animation(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentVal = start + progress * (end - start);
+                element.innerText = currentVal.toFixed(2) + suffix;
+                if (progress < 1) {
+                    requestAnimationFrame(animation);
+                }
+            }
+            requestAnimationFrame(animation);
+        }
+
+        // Special gauge text animator (preserves HTML structure)
+        function animateGaugeScore(start, end, duration) {
+            let startTime = null;
+            function animation(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentVal = Math.round(start + progress * (end - start));
+                scoreDisplay.innerHTML = `${currentVal}<span class="gauge-percent">%</span>`;
+                if (progress < 1) {
+                    requestAnimationFrame(animation);
+                }
+            }
+            requestAnimationFrame(animation);
+        }
+
+        // FIX 2: JS Helper to dynamically color-code bars and card borders
+        function updateCardState(cardEl, barEl, valEl, prevVal, value) {
+            const val = Math.round(value);
+            animateValue(valEl, prevVal, val, 1000);
+            barEl.style.width = `${val}%`;
+            
+            // Dynamic bar coloring
+            let color = '#00FF88'; // green
+            if (val > 30 && val <= 60) color = '#FFD700'; // yellow
+            else if (val > 60) color = '#FF0000'; // red
+            
+            barEl.style.backgroundColor = color;
+            cardEl.style.borderLeft = `4px solid ${color}`;
+        }
+
+        // Update Gauge offset
+        function setGaugeOffset(score) {
+            const offset = 330 - (score / 100) * 330;
+            gaugeFillArc.style.strokeDashoffset = offset;
+        }
+
+        // Apply glow style variables based on rage rating
+        function setGlowColor(score) {
+            let color = 'var(--green)';
+            if (score > 30 && score <= 60) color = 'var(--yellow)';
+            else if (score > 60) color = 'var(--red)';
+            document.documentElement.style.setProperty('--glow-color', color);
+        }
+
+        function getClassification(score) {
+            if (score <= 20) return "CALM — Manipulation Resting";
+            if (score <= 40) return "TENSION — Whales Circling";
+            if (score <= 60) return "ANGER — Retail Taking Losses";
+            if (score <= 80) return "RAGE — Market Being Manipulated";
+            return "MAXIMUM RAGE — They Are Dumping";
+        }
+
+        function formatUSD(num) {
+            if (num === null || num === undefined) return '$0.00';
+            if (num >= 1) {
+                return '$' + num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+            return '$' + num.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 6 });
+        }
+
+        // FIX 4: Updated History bars rendering with scale, gap, labels and dynamic colors
+        function updateRageHistory(score) {
+            if (rageHistory.length >= 10) {
+                rageHistory.shift();
+            }
+            rageHistory.push(score);
+            
+            const container = document.getElementById('history-bars');
+            container.innerHTML = '';
+            
+            rageHistory.forEach(s => {
+                let color = '#00FF88';
+                if (s > 30 && s <= 60) color = '#FFD700';
+                else if (s > 60) color = '#FF0000';
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'history-bar-wrapper';
+                
+                const bar = document.createElement('div');
+                bar.className = 'history-bar';
+                const heightVal = Math.max(4, (s / 100) * 80); // Height = (score/100) * 80px, min 4px
+                bar.style.height = `${heightVal}px`;
+                bar.style.background = color;
+                bar.setAttribute('data-score', s);
+                
+                const label = document.createElement('span');
+                label.className = 'history-bar-label';
+                label.innerText = s;
+                
+                wrapper.appendChild(bar);
+                wrapper.appendChild(label);
+                container.appendChild(wrapper);
+            });
+        }
+
+        // Infinite stock ticker bar top of page
+        function updateLiveTicker(markets) {
+            const top10 = markets.slice(0, 10);
+            const doubled = [...top10, ...top10];
+            let tickerHTML = '';
+
+            doubled.forEach(coin => {
+                const change = coin.price_change_percentage_24h;
+                const isNeg = change < 0;
+                // FIX 6: Ticker price changes use consistent colors
+                const color = isNeg ? '#FF4500' : '#00FF88';
+                const arrow = isNeg ? '▼' : '▲';
+                const sign = isNeg ? '' : '+';
+
+                tickerHTML += `
+                    <div class="ticker-item">
+                        <span style="font-weight: 700;">${coin.name}</span>
+                        <span class="coin-symbol">${coin.symbol.toUpperCase()}</span>
+                        <span>${formatUSD(coin.current_price)}</span>
+                        <span style="color: ${color}; font-weight: 700;">${arrow} ${sign}${change.toFixed(2)}%</span>
+                    </div>
+                `;
+            });
+            liveTicker.innerHTML = tickerHTML;
+        }
+
+        // Process data, calculate signals, update DOM values
+        function processRageData(markets, fng, global) {
+            // Signal 1 - Market Pain (weight 40%)
+            let negativeCount = 0;
+            let sumLossPct = 0;
+            let worstCoinId = null;
+            let worstChange = 0;
+            
+            markets.forEach(coin => {
+                const change = coin.price_change_percentage_24h;
+                if (change < 0) {
+                    negativeCount++;
+                    sumLossPct += Math.abs(change);
+                }
+                if (change < worstChange) {
+                    worstChange = change;
+                    worstCoinId = coin.id;
+                }
+            });
+
+            const avgLossPct = negativeCount > 0 ? (sumLossPct / negativeCount) : 0;
+            let signal1 = (negativeCount / 100 * 50) + (avgLossPct * 5);
+            signal1 = Math.max(0, Math.min(100, signal1));
+
+            // Signal 2 - Inverted Fear & Greed (weight 20%)
+            const fngValue = parseInt(fng.data[0].value, 10);
+            let signal2 = 100 - fngValue;
+            signal2 = Math.max(0, Math.min(100, signal2));
+
+            // Signal 3 - BTC Dominance Pressure (weight 20%)
+            const btcDominance = parseFloat(global.data.market_cap_percentage.btc);
+            let signal3 = 0;
+            if (btcDominance > 50) {
+                signal3 = (btcDominance - 50) * 4;
+            }
+            signal3 = Math.max(0, Math.min(100, signal3));
+
+            // Signal 4 - Market Crash Velocity (weight 20%)
+            const marketCapChange24h = parseFloat(global.data.market_cap_change_percentage_24h_usd);
+            let signal4 = 0;
+            if (marketCapChange24h < 0) {
+                signal4 = Math.abs(marketCapChange24h) * 10;
+            }
+            signal4 = Math.max(0, Math.min(100, signal4));
+
+            // Final Rage Score Calculation
+            const finalScore = Math.max(0, Math.min(100, Math.round(
+                (signal1 * 0.40) + 
+                (signal2 * 0.20) + 
+                (signal3 * 0.20) + 
+                (signal4 * 0.20)
+            )));
+
+            // Animations for Gauge display
+            animateGaugeScore(prevRageScore, finalScore, 1000);
+            prevRageScore = finalScore;
+            
+            labelDisplay.innerText = getClassification(finalScore);
+            setGaugeOffset(finalScore);
+            setGlowColor(finalScore);
+
+            // Animate Card Values with FIX 2 colors
+            updateCardState(cards.pain, barMarketPain, valMarketPain, prevSignals.s1, signal1);
+            updateCardState(cards.fng, barFearGreed, valFearGreed, prevSignals.s2, signal2);
+            updateCardState(cards.btc, barBtcPressure, valBtcPressure, prevSignals.s3, signal3);
+            updateCardState(cards.crash, barCrashVelocity, valCrashVelocity, prevSignals.s4, signal4);
+
+            prevSignals.s1 = Math.round(signal1);
+            prevSignals.s2 = Math.round(signal2);
+            prevSignals.s3 = Math.round(signal3);
+            prevSignals.s4 = Math.round(signal4);
+
+            // Section A: Manipulation Watch Box animations
+            animateValue(document.getElementById('metric-coins-red').querySelector('.metric-val'), prevWatch.red, negativeCount, 1000);
+            animateDecimal(document.getElementById('metric-avg-loss').querySelector('.metric-val'), prevWatch.avg, avgLossPct, 1000, '%');
+            animateDecimal(document.getElementById('metric-mcap-change').querySelector('.metric-val'), prevWatch.mcap, marketCapChange24h, 1000, '%');
+
+            prevWatch.red = negativeCount;
+            prevWatch.avg = avgLossPct;
+            prevWatch.mcap = marketCapChange24h;
+
+            // Color-code watch metric indicators
+            document.getElementById('metric-coins-red').querySelector('.metric-val').style.color = '#FF4500';
+            document.getElementById('metric-avg-loss').querySelector('.metric-val').style.color = '#FF4500';
+            const mcapVal = document.getElementById('metric-mcap-change').querySelector('.metric-val');
+            mcapVal.style.color = marketCapChange24h >= 0 ? '#00FF88' : '#FF4500';
+
+            // Populate Top 20 table with price flash indicators
+            let tableHTML = '';
+            const top20 = markets.slice(0, 20);
+
+            top20.forEach(coin => {
+                const change = coin.price_change_percentage_24h;
+                const isNeg = change < 0;
+                const rowClass = coin.id === worstCoinId ? 'worst-row' : '';
+                const badgeClass = isNeg ? 'change-badge negative' : 'change-badge positive';
+                const sign = isNeg ? '' : '+';
+                const arrow = isNeg ? '▼' : '▲';
+                // FIX 6: Arrows use matching red/green colors
+                const arrowColor = isNeg ? '#FF4500' : '#00FF88';
+
+                // Check for live price flashes
+                const prevPrice = previousPrices[coin.id];
+                let flashClass = '';
+                if (prevPrice !== undefined) {
+                    if (coin.current_price > prevPrice) flashClass = 'flash-up';
+                    else if (coin.current_price < prevPrice) flashClass = 'flash-down';
+                }
+                previousPrices[coin.id] = coin.current_price;
+
+                // Magnitude loss bar
+                const magnitudePercent = Math.min(100, Math.abs(change) * 5);
+
+                tableHTML += `
+                    <tr class="${rowClass}">
+                        <td style="padding-left: 16px;">${coin.market_cap_rank}</td>
+                        <td>
+                            <div class="coin-name-cell">
+                                <img class="coin-icon" src="${coin.image}" alt="${coin.name}">
+                                <span style="font-weight: 700;">${coin.name}</span>
+                                <span class="coin-symbol">${coin.symbol}</span>
+                            </div>
+                        </td>
+                        <td class="${flashClass}" style="text-align: right; font-feature-settings: 'tnum'; font-weight: 700;">
+                            <span style="color: ${arrowColor}; margin-right: 4px;">${arrow}</span>
+                            ${formatUSD(coin.current_price)}
+                        </td>
+                        <td style="text-align: right;">
+                            <div class="change-container">
+                                <span class="${badgeClass}">${sign}${change.toFixed(2)}%</span>
+                                <div class="sparkline-bar-bg">
+                                    <div class="sparkline-bar-fill" style="width: ${magnitudePercent}%;"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            coinTableBody.innerHTML = tableHTML;
+
+            // Update ticker
+            updateLiveTicker(markets);
+
+            // Update history chart
+            updateRageHistory(finalScore);
+
+            // Set timestamps
+            const now = new Date();
+            updateTimeText.innerText = `LAST UPDATED: ${now.toLocaleTimeString()}`;
+        }
+
+        async function init() {
+            try {
+                errorBox.style.display = 'none';
+                const [resMarkets, resFng, resGlobal] = await Promise.all([
+                    fetch(API_GEKO_MARKETS),
+                    fetch(API_FEAR_GREED),
+                    fetch(API_GEKO_GLOBAL)
+                ]);
+
+                if (!resMarkets.ok || !resFng.ok || !resGlobal.ok) {
+                    throw new Error("HTTP Fetch Error");
+                }
+
+                const markets = await resMarkets.json();
+                const fng = await resFng.json();
+                const global = await resGlobal.json();
+
+                processRageData(markets, fng, global);
+            } catch (err) {
+                console.error("Fetch failed", err);
+                showError();
+            }
+        }
+
+        function showError() {
+            errorBox.style.display = 'flex';
+            scoreDisplay.innerText = 'ERR';
+            labelDisplay.innerText = 'DATA UNAVAILABLE';
+            labelDisplay.style.color = '#FF0000';
+            updateTimeText.innerText = 'REFRESH FAILED';
+            document.body.className = 'rage-high';
+            
+            [valMarketPain, valFearGreed, valBtcPressure, valCrashVelocity].forEach(val => {
+                val.innerText = 'N/A';
+            });
+
+            coinTableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #FF0000; font-weight: 700; padding: 40px;">
+                        DATA FETCH FAILED — COINGECKO RATE LIMIT REACHED OR OFFLINE
+                    </td>
+                </tr>
+            `;
+
+            setGaugeOffset(0);
+        }
+
+        // Initialize countdown ticker loops
+        function startCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft <= 0) {
+                    secondsLeft = 60;
+                    init();
+                }
+                countdownText.innerText = `NEXT UPDATE IN: ${secondsLeft}S`;
+            }, 1000);
+        }
+
+        // Exec immediately on load
+        init().then(() => {
+            startCountdown();
+        });
+    </script>
+</body>
+</html>
