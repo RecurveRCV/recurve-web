@@ -2001,7 +2001,7 @@
                         </li>
                         <li class="phase-spec-item">
                             <span class="phase-spec-label">Hardware</span>
-                            <span class="phase-spec-val">Any CPU</span>
+                            <span class="phase-spec-val">Mine with cpuminer-multi (CPU miner)</span>
                         </li>
                     </ul>
                 </div>
@@ -2219,12 +2219,23 @@
             <div class="guide-step">
                 <h3 class="guide-step-title">
                     <span class="guide-step-num">1</span>
-                    Install Dependencies
+                    Install All Dependencies
                 </h3>
                 <div class="terminal-box">
-                    <div class="terminal-line"><span class="terminal-comment"># Ubuntu/Debian</span></div>
-                    <div class="terminal-line">sudo apt install build-essential libssl-dev</div>
-                    <div class="terminal-line">sudo apt install libboost-all-dev libevent-dev<span class="terminal-cursor"></span></div>
+                    <div class="terminal-line">sudo apt update</div>
+                    <div class="terminal-line">sudo apt install build-essential libssl-dev \</div>
+                    <div class="terminal-line">libboost-all-dev libevent-dev libzmq3-dev \</div>
+                    <div class="terminal-line">libminiupnpc-dev libcurl4-openssl-dev \</div>
+                    <div class="terminal-line">automake libtool pkg-config yasm -y</div>
+                    <div class="terminal-line"><span class="terminal-comment"># Berkeley DB 4.8 (required — not in Ubuntu 24.04 repos)</span></div>
+                    <div class="terminal-line">wget http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz</div>
+                    <div class="terminal-line">tar -xzvf db-4.8.30.NC.tar.gz</div>
+                    <div class="terminal-line">sed -i 's/__atomic_compare_exchange/__atomic_compare_exchange_db/g' db-4.8.30.NC/dbinc/atomic.h</div>
+                    <div class="terminal-line">cd db-4.8.30.NC/build_unix &amp;&amp; \</div>
+                    <div class="terminal-line">../dist/configure --enable-cxx --disable-shared \</div>
+                    <div class="terminal-line">--with-pic --prefix=/usr/local/BerkeleyDB.4.8 &amp;&amp; \</div>
+                    <div class="terminal-line">make -j$(nproc) &amp;&amp; sudo make install</div>
+                    <div class="terminal-line">cd ~ &amp;&amp; rm -rf db-4.8.30.NC db-4.8.30.NC.tar.gz<span class="terminal-cursor"></span></div>
                 </div>
             </div>
 
@@ -2232,13 +2243,15 @@
             <div class="guide-step">
                 <h3 class="guide-step-title">
                     <span class="guide-step-num">2</span>
-                    Clone and Build
+                    Clone and Build Recurve Node
                 </h3>
                 <div class="terminal-box">
                     <div class="terminal-line">git clone https://github.com/RecurveRCV/recurve-core</div>
                     <div class="terminal-line">cd recurve-core</div>
                     <div class="terminal-line">./autogen.sh</div>
-                    <div class="terminal-line">./configure</div>
+                    <div class="terminal-line">./configure \</div>
+                    <div class="terminal-line">LDFLAGS="-L/usr/local/BerkeleyDB.4.8/lib" \</div>
+                    <div class="terminal-line">CPPFLAGS="-I/usr/local/BerkeleyDB.4.8/include"</div>
                     <div class="terminal-line">make -j$(nproc)<span class="terminal-cursor"></span></div>
                 </div>
             </div>
@@ -2247,12 +2260,18 @@
             <div class="guide-step">
                 <h3 class="guide-step-title">
                     <span class="guide-step-num">3</span>
-                    Start Mining
+                    Create Config File
                 </h3>
                 <div class="terminal-box">
-                    <div class="terminal-line">./src/recurved -daemon</div>
-                    <div class="terminal-line">./src/recurve-cli getmininginfo</div>
-                    <div class="terminal-line">./src/recurve-cli generatetoaddress 1 YOUR_RCV_ADDRESS<span class="terminal-cursor"></span></div>
+                    <div class="terminal-line">mkdir -p ~/.recurve</div>
+                    <div class="terminal-line">cat &gt; ~/.recurve/recurve.conf &lt;&lt; 'EOF'</div>
+                    <div class="terminal-line">server=1</div>
+                    <div class="terminal-line">daemon=1</div>
+                    <div class="terminal-line">rpcuser=recurveuser</div>
+                    <div class="terminal-line">rpcpassword=CHOOSE_YOUR_OWN_STRONG_PASSWORD</div>
+                    <div class="terminal-line">rpcallowip=127.0.0.1</div>
+                    <div class="terminal-line">rpcport=9445</div>
+                    <div class="terminal-line">EOF<span class="terminal-cursor"></span></div>
                 </div>
             </div>
 
@@ -2260,15 +2279,83 @@
             <div class="guide-step">
                 <h3 class="guide-step-title">
                     <span class="guide-step-num">4</span>
-                    Check Balance
+                    Start Recurve Node
                 </h3>
                 <div class="terminal-box">
-                    <div class="terminal-line">./src/recurve-cli getbalance<span class="terminal-cursor"></span></div>
+                    <div class="terminal-line">cd recurve-core</div>
+                    <div class="terminal-line">src/recurved -daemon</div>
+                    <div class="terminal-line">sleep 5</div>
+                    <div class="terminal-line">src/recurve-cli getblockchaininfo</div>
+                    <div class="terminal-line"><span class="terminal-comment"># Confirm: chain "main", bestblockhash shows genesis</span><span class="terminal-cursor"></span></div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="guide-step">
+                <h3 class="guide-step-title">
+                    <span class="guide-step-num">5</span>
+                    Get Your Mining Wallet Address
+                </h3>
+                <div class="terminal-box">
+                    <div class="terminal-line">src/recurve-cli getnewaddress "mining"</div>
+                    <div class="terminal-line"><span class="terminal-comment"># Save this R... address — rewards go here</span><span class="terminal-cursor"></span></div>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="guide-step">
+                <h3 class="guide-step-title">
+                    <span class="guide-step-num">6</span>
+                    Download and Build CPU Miner
+                </h3>
+                <div class="terminal-box">
+                    <div class="terminal-line">mkdir -p ~/rcv-miner &amp;&amp; cd ~/rcv-miner</div>
+                    <div class="terminal-line">git clone https://github.com/tpruvot/cpuminer-multi.git</div>
+                    <div class="terminal-line">cd cpuminer-multi</div>
+                    <div class="terminal-line">./autogen.sh</div>
+                    <div class="terminal-line">./configure CFLAGS="-O3" LIBS="-lcurl -lcrypto -lssl"</div>
+                    <div class="terminal-line">make -j$(nproc)<span class="terminal-cursor"></span></div>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="guide-step">
+                <h3 class="guide-step-title">
+                    <span class="guide-step-num">7</span>
+                    START MINING (this is the moment)
+                </h3>
+                <div class="terminal-box">
+                    <div class="terminal-line">./cpuminer -a scrypt \</div>
+                    <div class="terminal-line">  -o http://127.0.0.1:9445 \</div>
+                    <div class="terminal-line">  -u recurveuser \</div>
+                    <div class="terminal-line">  -p YOUR_PASSWORD_FROM_STEP_3 \</div>
+                    <div class="terminal-line">  --no-longpoll \</div>
+                    <div class="terminal-line">  --no-stratum \</div>
+                    <div class="terminal-line">  --coinbase-addr=YOUR_RCV_ADDRESS_FROM_STEP_5</div>
+                    <div class="terminal-line"><span class="terminal-comment"># When you press Enter — your CPU starts mining</span></div>
+                    <div class="terminal-line"><span class="terminal-comment"># You will see hashrate (kH/s) — that is real mining</span><span class="terminal-cursor"></span></div>
+                </div>
+            </div>
+
+            <!-- Step 8 -->
+            <div class="guide-step">
+                <h3 class="guide-step-title">
+                    <span class="guide-step-num">8</span>
+                    Check Your Balance
+                </h3>
+                <div class="terminal-box">
+                    <div class="terminal-line">cd ~/recurve-core</div>
+                    <div class="terminal-line">src/recurve-cli getbalance</div>
+                    <div class="terminal-line">src/recurve-cli getblockcount</div>
+                    <div class="terminal-line"><span class="terminal-comment"># Balance shows as "immature" for first 100 blocks</span></div>
+                    <div class="terminal-line"><span class="terminal-comment"># Then becomes spendable automatically</span><span class="terminal-cursor"></span></div>
                 </div>
             </div>
 
             <div class="guide-note">
-                Mining difficulty is very low in Phase 1. This is intentional — early believers are rewarded. The Awakening belongs to retail.
+                Mining rewards mature after 100 confirmations.<br>
+                Phase 1 difficulty is near-zero — any modern CPU finds blocks within seconds to minutes.<br>
+                The Awakening belongs to those who show up first.
             </div>
         </div>
     </section>
